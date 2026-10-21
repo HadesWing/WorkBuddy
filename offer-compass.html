@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>打工人决策台 · Offer 对比 / 离职补偿 / 年终奖个税</title>
+<style>
+:root{
+  --brand:#12C87A; --brand2:#0ea86a; --brandbg:#EAFBF3; --brandline:#BFEEDB;
+  --ink:#1F2D3D; --ink2:#5A6B7B; --ink3:#8A99A8;
+  --bg:#F5F7F6; --card:#FFFFFF; --line:#E6ECEA;
+  --warn:#E67E22; --warnbg:#FDF3E7; --red:#E74C3C; --blue:#3B82F6;
+  --shadow:0 6px 24px rgba(31,45,61,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.6;font-size:15px}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 56px}
+
+/* header */
+.hero{background:linear-gradient(135deg,#0ea86a,#12C87A 55%,#3AD596);color:#fff;
+  padding:34px 0 58px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;
+  border-radius:50%;background:rgba(255,255,255,.12)}
+.hero::before{content:"";position:absolute;right:60px;bottom:-90px;width:160px;height:160px;
+  border-radius:50%;background:rgba(255,255,255,.08)}
+.hero-in{max-width:920px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
+.hero h1{font-size:26px;font-weight:800;letter-spacing:.5px;display:flex;align-items:center;gap:10px}
+.hero .sub{margin-top:8px;font-size:14px;opacity:.92}
+.hero .tags{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.hero .tag{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  border-radius:999px;padding:3px 12px;font-size:12.5px}
+
+/* tabs */
+.tabs{display:flex;gap:8px;margin:-28px 0 20px;position:relative;z-index:2;flex-wrap:wrap}
+.tab{flex:1;min-width:136px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;
+  padding:11px 12px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink2);
+  box-shadow:var(--shadow);transition:all .18s;font-family:inherit;text-align:left}
+.tab .t-ico{font-size:20px;margin-right:6px}
+.tab.on{border-color:var(--brand);color:var(--ink);background:linear-gradient(180deg,#fff,var(--brandbg))}
+.tab:active{transform:scale(.98)}
+.pane{display:none}
+.pane.on{display:block;animation:fadein .25s}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:20px;box-shadow:var(--shadow);margin-bottom:18px}
+.card h2{font-size:17px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card .desc{font-size:13px;color:var(--ink3);margin-bottom:16px}
+
+/* form */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid .full{grid-column:1/-1}
+label.f{display:block;font-size:12.5px;color:var(--ink2);font-weight:600;margin-bottom:4px}
+input[type=text],input[type=number],input[type=date],select{width:100%;border:1.5px solid var(--line);
+  border-radius:10px;padding:9px 12px;font-size:14.5px;font-family:inherit;color:var(--ink);
+  background:#FBFCFC;outline:none;transition:border .15s}
+input:focus,select:focus{border-color:var(--brand);background:#fff}
+.fld{margin-bottom:10px}
+textarea{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;
+  font-size:13.5px;font-family:inherit;color:var(--ink);background:#FBFCFC;outline:none;
+  transition:border .15s;resize:vertical;line-height:1.55}
+textarea:focus{border-color:var(--brand);background:#fff}
+.lt th,.lt td{text-align:left;vertical-align:top}
+.catb{display:inline-block;background:#EEF2F0;color:var(--ink2);border-radius:999px;font-size:10.5px;padding:0 8px;margin-right:4px;vertical-align:1px;white-space:nowrap}
+.hint{font-size:11.5px;color:var(--ink3);margin-top:3px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;cursor:pointer;
+  font-family:inherit;font-weight:700;border-radius:12px;transition:all .15s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-main{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#fff;
+  padding:11px 26px;font-size:15px;box-shadow:0 4px 14px rgba(18,200,122,.35)}
+.btn-ghost{background:#fff;color:var(--brand2);border:1.5px solid var(--brandline);
+  padding:9px 18px;font-size:13.5px}
+.btn-sm{padding:6px 12px;font-size:12.5px;border-radius:9px}
+.btn-del{background:var(--warnbg);color:var(--warn);border:1px solid #F5D9B8}
+
+/* results */
+.res{margin-top:16px}
+.kpi{background:linear-gradient(135deg,var(--brandbg),#F6FFFB);border:1px solid var(--brandline);
+  border-radius:14px;padding:16px 18px}
+.kpi .big{font-size:30px;font-weight:800;color:var(--brand2);font-variant-numeric:tabular-nums}
+.kpi .big small{font-size:14px;font-weight:600;color:var(--ink2)}
+.kpi .cap{font-size:12.5px;color:var(--ink2);margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:9px 8px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--ink3);font-weight:600;font-size:12.5px;white-space:nowrap}
+tr.win td{background:var(--brandbg);font-weight:700}
+.badge{display:inline-block;background:var(--brand);color:#fff;border-radius:999px;
+  font-size:10.5px;padding:1px 8px;margin-left:6px;vertical-align:2px;font-weight:600}
+.barw{margin-top:12px}
+.brow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.brow .bl{width:84px;font-size:12.5px;color:var(--ink2);text-align:right;flex-shrink:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .bt{flex:1;background:#EEF2F0;border-radius:999px;height:20px;overflow:hidden}
+.brow .bf{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand2),var(--brand));
+  min-width:2px;transition:width .5s}
+.brow .bv{width:86px;font-size:12px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+.note{background:var(--warnbg);border:1px solid #F5D9B8;border-radius:12px;padding:12px 14px;
+  font-size:12.5px;color:#8a5a17;margin-top:12px}
+.note b{color:var(--warn)}
+.tipbox{background:#F0F7FF;border:1px solid #CDE3FB;border-radius:12px;padding:12px 14px;
+  font-size:12.5px;color:#2b5d8f;margin-top:12px}
+.formula{font-size:12px;color:var(--ink3);margin-top:8px;font-family:ui-monospace,Consolas,monospace}
+
+/* offers */
+.offer-card{border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;position:relative}
+.offer-card h3{font-size:14.5px;font-weight:700;margin-bottom:12px;color:var(--brand2)}
+.ohd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+
+/* cheat cards */
+.cheats{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cheat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;
+  box-shadow:var(--shadow)}
+.cheat h3{font-size:14.5px;font-weight:700;margin-bottom:8px}
+.cheat ul{padding-left:18px;font-size:13px;color:var(--ink2)}
+.cheat li{margin-bottom:6px}
+
+footer{margin-top:26px;text-align:center;font-size:12px;color:var(--ink3);line-height:1.8}
+footer a{color:var(--brand2);text-decoration:none}
+
+@media (max-width:640px){
+  .grid{grid-template-columns:1fr}
+  .cheats{grid-template-columns:1fr}
+  .hero h1{font-size:21px}
+  .brow .bv{width:74px}
+  .kpi .big{font-size:24px}
+  th,td{padding:8px 5px;font-size:12.5px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-in">
+    <h1>🧭 打工人决策台</h1>
+    <div class="sub">跳槽季的三个硬核计算器 —— 数据全部在本地浏览器计算，不上传、不存储</div>
+    <div class="tags">
+      <span class="tag">⚖️ Offer 多维对比</span>
+      <span class="tag">🎯 JD 匹配分析</span>
+      <span class="tag">💰 离职补偿 N / N+1 / 2N</span>
+      <span class="tag">🧾 年终奖个税优化</span>
+      <span class="tag">📝 面试复盘库</span>
+      <span class="tag">📋 离职小抄</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab on" data-t="p1"><span class="t-ico">⚖️</span>Offer 对比</button>
+    <button class="tab" data-t="p5"><span class="t-ico">🎯</span>JD 匹配分析</button>
+    <button class="tab" data-t="p2"><span class="t-ico">💰</span>离职补偿</button>
+    <button class="tab" data-t="p3"><span class="t-ico">🧾</span>年终奖个税</button>
+    <button class="tab" data-t="p6"><span class="t-ico">📝</span>面试复盘库</button>
+    <button class="tab" data-t="p4"><span class="t-ico">📋</span>离职小抄</button>
+  </div>
+
+  <!-- ═══════════ P1 Offer 对比 ═══════════ -->
+  <div class="pane on" id="p1">
+    <div class="card">
+      <h2>⚖️ Offer 对比器</h2>
+      <div class="desc">月薪只是冰山一角：月数、公积金、期权、加班、通勤都会改变真实性价比。添加 2—4 个 Offer，一键算出综合年包和真实时薪。</div>
+      <div id="offerList"></div>
+      <button class="btn btn-ghost" onclick="addOffer()">＋ 添加一个 Offer</button>
+      <div class="hint" style="margin-top:8px">💾 填写内容自动保存在本设备浏览器中，下次打开自动恢复，不上传服务器。</div>
+      <div style="margin-top:16px"><button class="btn btn-main" onclick="cmpOffers()">开始对比</button></div>
+      <div class="res" id="cmpRes"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ P2 离职补偿 ═══════════ -->
+  <div class="pane" id="p2">
+    <div class="card">
+      <h2>💰 离职补偿计算器</h2>
+      <div class="desc">依据《劳动合同法》第 40 / 41 / 46 / 47 / 87 条估算经济补偿。谈离职之前，先知道自己该拿多少。</div>
+      <div class="grid">
+        <div class="fld"><label class="f">入职日期 *</label><input type="date" id="cIn"></div>
+        <div class="fld"><label class="f">离职日期 *</label><input type="date" id="cOut"></div>
+        <div class="fld full"><label class="f">离职前 12 个月平均应发工资（元/月，含奖金、津贴、提成）*</label>
+          <input type="number" id="cSal" placeholder="如 25000" min="0"></div>
+        <div class="fld"><label class="f">当地上年度社平月工资（元，选填，用于高收入封顶判断）</label>
+          <input type="number" id="cAvg" placeholder="如 12000" min="0"></div>
+        <div class="fld"><label class="f">解除情形</label>
+          <select id="cType">
+            <option value="n1">无过失性辞退（N+1）— 第40条</option>
+            <option value="n">协商解除 / 经济性裁员 / 合同到期不续（N）— 第36/41/46条</option>
+            <option value="2n">违法解除赔偿金（2N）— 第87条</option>
+            <option value="0">主动辞职（一般为 0）</option>
+          </select></div>
+      </div>
+      <div style="margin-top:12px"><button class="btn btn-main" onclick="calcComp()">计算补偿</button></div>
+      <div class="res" id="compRes"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ P3 年终奖个税 ═══════════ -->
+  <div class="pane" id="p3">
+    <div class="card">
+      <h2>🧾 年终奖个税优化器</h2>
+      <div class="desc">年终奖有两种计税方式：单独计税（政策延续至 2027 年底）或并入综合所得。两种都算一遍，告诉你哪种到手更多，并避开"多发一元少拿千元"的无效区间。</div>
+      <div class="grid">
+        <div class="fld full"><label class="f">年终奖金额（元）*</label><input type="number" id="bBonus" placeholder="如 80000" min="0"></div>
+        <div class="fld"><label class="f">全年工资薪金收入（元，选填）</label><input type="number" id="bSalary" placeholder="如 300000"></div>
+        <div class="fld"><label class="f">全年三险一金个人部分（元，选填）</label><input type="number" id="bSb" placeholder="如 45000"></div>
+        <div class="fld"><label class="f">全年专项附加扣除（元，选填：房贷/房租/子女/赡养等）</label><input type="number" id="bKk" placeholder="如 60000"></div>
+      </div>
+      <div style="margin-top:12px"><button class="btn btn-main" onclick="calcBonus()">对比两种计税方式</button></div>
+      <div class="res" id="bonusRes"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ P5 JD 匹配 ═══════════ -->
+  <div class="pane" id="p5">
+    <div class="card">
+      <h2>🎯 JD 匹配分析器</h2>
+      <div class="desc">简历保存一次长期使用；之后每个岗位只需粘贴 JD：关键词覆盖率、缺失项按出现频次排序，<b>每个缺失项附「速学卡片」</b>——一句话定义、核心要点、高频问答、学习路径，不会的 10 分钟搭起认知框架。全文本机处理，不上传。</div>
+      <div class="fld"><label class="f">我的简历（保存一次，长期使用）</label>
+        <textarea id="jRes" rows="7" placeholder="粘贴简历文本（Word/PDF 里全选复制即可），会自动保存在本机…"></textarea>
+        <div class="hint" id="jResHint">💾 输入后自动保存到本机，下次打开无需重贴。</div></div>
+      <div class="fld"><label class="f">职位描述 JD（每个岗位粘一次，自动记住）</label>
+        <textarea id="jJd" rows="7" placeholder="粘贴完整 JD 文本…"></textarea></div>
+      <div style="margin-top:12px"><button class="btn btn-main" onclick="calcJD()">🎯 分析差距 · 生成速学清单</button></div>
+      <div class="res" id="jdRes"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ P6 面试复盘 ═══════════ -->
+  <div class="pane" id="p6">
+    <div class="card">
+      <h2>📝 面试复盘库</h2>
+      <div class="desc">每轮面试后花 3 分钟记录被问住的点，<b>自动按类别归档</b>（基础八股 / 数据库 / 分布式 / 算法…），攒成跨公司的「面试错题本」。导出的综合文档按<b>类别汇总多家公司</b> + 公司时间线 + 高频薄弱点三层呈现。</div>
+      <div class="grid">
+        <div class="fld"><label class="f">公司 *</label><input type="text" id="iCo" placeholder="如：A 公司"></div>
+        <div class="fld"><label class="f">岗位</label><input type="text" id="iPos" placeholder="如：后端开发"></div>
+        <div class="fld"><label class="f">日期</label><input type="date" id="iDate"></div>
+        <div class="fld"><label class="f">轮次</label><select id="iRound"><option>一面</option><option>二面</option><option>三面</option><option>HR 面</option><option>笔试</option><option>其他</option></select></div>
+        <div class="fld"><label class="f">本条类别（选「自动」则按问题关键词逐题归类）</label><select id="iCat"><option value="auto">自动归类</option><option>基础八股</option><option>操作系统与网络</option><option>数据库与缓存</option><option>分布式与架构</option><option>系统设计</option><option>项目深挖</option><option>算法手撕</option><option>场景与开放题</option><option>HR 与软素质</option><option>其他</option></select></div>
+        <div class="fld full"><label class="f">被问住 / 没答好的问题（每行一个）</label><textarea id="iQ" rows="4" placeholder="如：Redis 持久化 RDB 和 AOF 的取舍"></textarea></div>
+        <div class="fld full"><label class="f">复盘笔记（当时的回答、事后想到的更好回答、面试官关注点）</label><textarea id="iN" rows="4"></textarea></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-main" onclick="saveInterview()">保存本条复盘</button>
+        <button class="btn btn-ghost" onclick="exportInterviews()">⬇️ 导出综合复盘文档 (Markdown)</button>
+        <button class="btn btn-ghost" onclick="clearInterviews()">清空全部</button>
+      </div>
+      <div class="res" id="intList"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ P4 小抄 ═══════════ -->
+  <div class="pane" id="p4">
+    <div class="card">
+      <h2>🌐 各地政策差异速览</h2>
+      <div class="desc">劳动法框架全国统一，但补偿封顶基数、竞业补偿标准、社保细节按地方规定执行。跳槽城市不同，账要分开算。</div>
+      <table class="lt">
+        <tr><th style="width:88px">差异点</th><th>通用规则</th><th>地区差异</th></tr>
+        <tr><td><b>竞业补偿</b></td><td>最高法司法解释：按月支付，一般为离职前 12 个月平均工资的 <b>30%</b>，且不低于当地最低工资；3 个月未付可请求解除协议</td><td>深圳特区条例要求不低于平均工资的 <b>1/2</b>；江苏省要求不低于 <b>1/3</b>；多数省份未明确比例，按 30% 兜底</td></tr>
+        <tr><td><b>补偿封顶基数</b></td><td>月工资超当地「上年度职工月平均工资」3 倍时封顶（47 条）</td><td>各地统计口径（全口径城镇单位就业人员平均工资）差异大，同省不同市封顶线可能相差数千元/月，需查当地人社局当年公布值</td></tr>
+        <tr><td><b>公积金</b></td><td>缴存比例全国统一 5%–12%，基数上限为当地社平工资 3 倍</td><td>上海另有 1–8% 补充公积金；各市缴存基数上限差异明显（一线 vs 三四线可差一倍以上）</td></tr>
+        <tr><td><b>灵活就业参保</b></td><td>空窗期可以个人身份自缴养老+医疗，保障不断档</td><td>多数城市已放开户籍限制，个别超大城市的参保条件仍有细则，以当地社保局为准</td></tr>
+        <tr><td><b>失业保险金</b></td><td>缴满 1 年、非因本人意愿中断就业即可申领</td><td>月标准约为当地最低工资的 70%–90%，可领月数按缴费年限 12–24 个月不等</td></tr>
+        <tr><td><b>最低工资</b></td><td>影响试用期工资下限、病假工资下限、竞业兜底</td><td>各省甚至同省各地市均不同，每年年中集中调整</td></tr>
+        <tr><td><b>无地区差异项</b></td><td colspan="2">年终奖计税规则、医疗期标准（工龄 3–24 个月）、仲裁时效 1 年、年假天数——全国统一</td></tr>
+      </table>
+    </div>
+    <div class="cheats">
+      <div class="cheat"><h3>🗣️ 被裁沟通要点</h3><ul>
+        <li>先让对方出方案，不要先报心理价位</li>
+        <li>口头承诺无效，补偿方案要落到书面 / 邮件</li>
+        <li>谈 N 时记住：N 是法定下限，不是上限，协商空间看工龄和交接价值</li>
+        <li>"背调配合""竞业不启动"等都可以是谈判筹码</li>
+        <li>签字前逐条看《协商解除协议》，特别注意"双方再无其他争议"条款</li></ul></div>
+      <div class="cheat"><h3>📄 离职证明</h3><ul>
+        <li>《劳动合同法》第 50 条：单位必须出具，不得拒绝</li>
+        <li>内容只要：任职期间、岗位、解除日期，负面评价可拒收</li>
+        <li>不写"个人原因"以外的敏感措辞，影响下一份工作</li>
+        <li>丢了对入职新公司社保、公积金转移很麻烦，扫描留存</li></ul></div>
+      <div class="cheat"><h3>🏥 社保衔接</h3><ul>
+        <li>当月 15 日前离职，原公司一般缴当月；15 日后入职，新公司缴当月——安排好断档</li>
+        <li>医保断缴次月即影响报销，连续缴纳年限影响大病/购房购车资格的城市尤其要注意</li>
+        <li>空窗期可走灵活就业身份自缴养老+医疗（多数城市已放开户籍限制）</li>
+        <li>公积金断缴不影响账户余额，但影响贷款连续性认定</li></ul></div>
+      <div class="cheat"><h3>⏸️ 竞业限制</h3><ul>
+        <li>不是签了就有效：限制期最长 2 年，且必须按月支付经济补偿（一般为离职前平均工资的 30%，且不低于当地最低工资）</li>
+        <li>3 个月没收到补偿，可以请求解除竞业协议</li>
+        <li>普通员工（无接触商业秘密）被要求竞业可主张协议无效</li>
+        <li>违约金畸高可请求法院调低</li></ul></div>
+      <div class="cheat"><h3>🏖️ 年假折算</h3><ul>
+        <li>离职当年未休年假按日工资 ×300% 折算（含正常工资，即额外 200%）</li>
+        <li>折算天数 =（当年度已过日历天数 ÷365）× 全年应休天数 − 已休天数，不足 1 天不算</li>
+        <li>公司统一"清零"年假不合法，可主张折算</li></ul></div>
+      <div class="cheat"><h3>🕵️ 背调与交接</h3><ul>
+        <li>背调通常核实：任职时间、岗位、离职原因、有无竞业——保持口径与离职证明一致</li>
+        <li>交接清单留存书面记录，避免离职后甩锅</li>
+        <li>工作邮箱、代码权限等按时归还，但个人证件、推荐信素材先备份</li>
+        <li>最后工作日与工资结算日确认清楚（工资、报销、年终奖比例发放口径）</li></ul></div>
+    </div>
+  </div>
+
+  <footer>
+    计算结果基于现行法律法规与税收政策的通用规则估算，仅供参考，不构成法律或税务意见；各地执行口径存在差异，重大决策请咨询专业人士。<br>
+    🧭 打工人决策台 · 用 WorkBuddy 制作 · 1024 程序员节
+  </footer>
+</div>
+
+<script>
+/* ═══════════ tabs ═══════════ */
+document.querySelectorAll('.tab').forEach(function(t){
+  t.onclick=function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');
+    document.getElementById(t.dataset.t).classList.add('on');
+  };
+});
+
+function fmt(n){ if(!isFinite(n))return '—';
+  return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function fmt1(n){ if(!isFinite(n))return '—';
+  return n.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function v(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function num(id){ var x=parseFloat(v(id)); return isFinite(x)?x:0; }
+
+/* ═══════════ P1 Offer 对比 ═══════════ */
+var offerSeq=0;
+var COLORS=['#12C87A','#3B82F6','#E67E22','#9B59B6'];
+function offerTemplate(i){
+  return '<div class="offer-card" id="oc'+i+'">'
+  +'<div class="ohd"><h3>Offer '+(i+1)+'</h3>'
+  +'<button class="btn btn-sm btn-del" onclick="delOffer('+i+')">删除</button></div>'
+  +'<div class="grid">'
+  +'<div class="fld"><label class="f">公司 / 项目名称</label><input type="text" id="oName'+i+'" placeholder="如：A 公司 · 后端开发"></div>'
+  +'<div class="fld"><label class="f">基本月薪（元）</label><input type="number" id="oSal'+i+'" placeholder="如 25000" min="0"></div>'
+  +'<div class="fld"><label class="f">固定发放月数</label><select id="oMon'+i+'">'
+    +'<option>12</option><option>13</option><option selected>14</option><option>15</option><option>16</option></select>'
+    +'<div class="hint">合同/offer 写明的固定月数</div></div>'
+  +'<div class="fld"><label class="f">浮动年终奖预估（元/年）</label><input type="number" id="oBon'+i+'" placeholder="如 40000" min="0"></div>'
+  +'<div class="fld"><label class="f">公积金缴存比例（个人+公司合计 %）</label><input type="number" id="oFund'+i+'" value="24" min="0" max="48"></div>'
+  +'<div class="fld"><label class="f">期权 / 股票年折算价值（元）</label><input type="number" id="oEq'+i+'" placeholder="保守估值，如 20000" min="0"></div>'
+  +'<div class="fld"><label class="f">每周加班时长（小时）</label><input type="number" id="oOt'+i+'" placeholder="如 10" min="0"></div>'
+  +'<div class="fld"><label class="f">单程通勤（分钟）</label><input type="number" id="oCm'+i+'" placeholder="如 45" min="0"></div>'
+  +'</div></div>';
+}
+function addOffer(){
+  var list=document.getElementById('offerList');
+  if(list.children.length>=4){return;}
+  list.insertAdjacentHTML('beforeend',offerTemplate(offerSeq++));
+}
+function delOffer(i){
+  var el=document.getElementById('oc'+i); if(el)el.remove();
+}
+/* Offer 本地保存（localStorage） */
+var K_OFF='wdc_offers_v1';
+function collectOffers(){
+  var arr=[];
+  document.querySelectorAll('.offer-card').forEach(function(c){
+    var i=c.id.slice(2);
+    arr.push({name:v('oName'+i),sal:v('oSal'+i),mon:v('oMon'+i),bon:v('oBon'+i),
+      fund:v('oFund'+i),eq:v('oEq'+i),ot:v('oOt'+i),cm:v('oCm'+i)});
+  });
+  return arr;
+}
+var saveT=null;
+function saveOffers(){
+  clearTimeout(saveT);
+  saveT=setTimeout(function(){ try{localStorage.setItem(K_OFF,JSON.stringify(collectOffers()))}catch(e){} },300);
+}
+function restoreOffers(){
+  var arr=null;
+  try{arr=JSON.parse(localStorage.getItem(K_OFF)||'null')}catch(e){}
+  if(arr&&arr.length){
+    document.getElementById('offerList').innerHTML='';offerSeq=0;
+    arr.forEach(function(o){
+      addOffer();var i=offerSeq-1;
+      [['oName','name'],['oSal','sal'],['oMon','mon'],['oBon','bon'],
+       ['oFund','fund'],['oEq','eq'],['oOt','ot'],['oCm','cm']].forEach(function(p){
+        var e=document.getElementById(p[0]+i);
+        if(e&&o[p[1]]!==undefined&&o[p[1]]!=='')e.value=o[p[1]];
+      });
+    });
+    return true;
+  }
+  return false;
+}
+document.getElementById('offerList').addEventListener('input',saveOffers);
+document.getElementById('offerList').addEventListener('change',saveOffers);
+if(!restoreOffers()){addOffer();addOffer();}
+
+/* ═══════════ P5 JD 匹配分析 ═══════════ */
+var TECH=['java','python','golang','c++','c语言','c#','rust','javascript','typescript','php','kotlin','swift',
+ 'spring','springboot','spring cloud','mybatis','django','flask','fastapi','gin',
+ 'vue','react','angular','uni-app','小程序','node.js','html5','css3',
+ 'linux','unix','ubuntu','centos','shell','bash','awk',
+ 'docker','kubernetes','k8s','容器','镜像','helm','istio','服务网格',
+ 'jenkins','gitlab','github actions','ci/cd','devops','git','svn','灰度发布',
+ 'redis','memcached','mysql','postgresql','oracle','mongodb','elasticsearch','clickhouse','分库分表','数据库','事务','索引','sql优化',
+ 'kafka','rocketmq','rabbitmq','pulsar','消息队列','zookeeper','etcd','nacos','注册中心','配置中心',
+ 'nginx','lvs','haproxy','网关','负载均衡',
+ 'grpc','thrift','dubbo','rpc','restful','graphql','api网关',
+ 'http','https','tcp','udp','socket','epoll','io多路复用','netty','ssl/tls','网络编程','拥塞控制',
+ '分布式','微服务','高并发','高可用','分布式事务','分布式锁','一致性哈希','cap','幂等','限流','熔断','降级',
+ 'jvm','gc','调优','多线程','并发编程','线程池','锁','协程','异步',
+ '算法','数据结构','leetcode','动态规划','图论','操作系统','编译原理','计算机网络',
+ '机器学习','深度学习','pytorch','tensorflow','paddle','sklearn','大模型','llm','aigc','rag','agent','prompt','transformer','微调','lora','embedding','向量数据库','推荐系统','搜索','nlp','cv','ocr','多模态','mlops',
+ 'opencv','cuda','tensorrt','模型部署','推理优化','量化',
+ '嵌入式','单片机','stm32','rtos','freertos','zephyr','arm','risc-v','交叉编译','makefile','cmake','gdb','内核','驱动开发','bsp','设备树',' bootloader','uboot','qt','gpio','uart','i2c','spi','can','modbus',
+ '音视频','webrtc','ffmpeg','流媒体','rtsp','rtmp','h.264','h.265','srs','qos','回声消除',
+ '性能优化','profiling','perf','火焰图','chrome trace','内存泄漏','稳定性','crash','长稳',
+ '单元测试','junit','pytest','自动化测试','selenium','测试用例',
+ '安全','渗透测试','加密','oauth2','jwt','xss','csrf','风控',
+ '数据分析','excel','数据看板','数仓','hive','spark','flink','hadoop','大数据','实时计算','数据湖','airflow',
+ 'aws','阿里云','腾讯云','azure','gcp','云原生','serverless','函数计算','对象存储',
+ 'prometheus','grafana','elk','日志分析','监控告警','链路追踪',
+ '产品设计','需求分析','用户调研','原型','axure','figma',
+ '项目管理','敏捷','scrum','pmp','okr','跨部门协作','团队管理','技术方案','架构设计','系统设计','重构','code review','技术选型'];
+var STOPW=/^(the|and|for|with|you|your|our|will|are|have|this|that|from|per|year|years|month|months|day|days|etc|com|cn|www|http|https|html|css|jpg|png|com|inc|ltd|co|job|post|about|more|than|over|at|least|plus|ability|experience|skills|skill|work|working|team|teams|good|great|strong|familiar|proficient|master|related|such|as|of|in|on|to|be|by|is|it|we|us|me|my|a|an|or|and)$/i;
+function kwCount(text){
+  var t=(text||'').toLowerCase(); var map={};
+  TECH.forEach(function(k){ var m=t.split(k).length-1; if(m>0)map[k]=m; });
+  var tokens=t.match(/[a-z][a-z0-9+#.\-/]{1,19}/g)||[];
+  tokens.forEach(function(w){
+    if(map[w]!==undefined||STOPW.test(w))return;
+    var m=t.split(w).length-1;
+    if(m>=2)map[w]=m;
+  });
+  return map;
+}
+function calcJD(){
+  var jd=v('jJd'), res=v('jRes');
+  if(!jd||!res){alert('请同时粘贴 JD 和简历');return;}
+  var need=kwCount(jd), keys=Object.keys(need);
+  if(!keys.length){alert('未能从 JD 中识别出关键词，请确认文本内容');return;}
+  var rl=res.toLowerCase(), hit=[], miss=[];
+  keys.forEach(function(k){ (rl.indexOf(k)>=0?hit:miss).push({k:k,n:need[k]}); });
+  hit.sort(function(a,b){return b.n-a.n}); miss.sort(function(a,b){return b.n-a.n});
+  var cov=Math.round(hit.length/keys.length*100);
+  var chips=function(arr,color){
+    return arr.map(function(o){return '<span style="display:inline-block;background:'+color+';color:#fff;border-radius:999px;padding:2px 10px;font-size:12px;margin:3px 4px 3px 0">'+esc(o.k)+(o.n>1?' ×'+o.n:'')+'</span>';}).join('')
+      ||'<span style="color:var(--ink3);font-size:12.5px">无</span>';
+  };
+  var hl='<div class="kpi"><div class="big">'+cov+'%<small> 关键词覆盖率（'+hit.length+'/'+keys.length+'）</small></div>'
+    +'<div class="cap">'+(cov>=70?'匹配度较高：简历已覆盖 JD 大部分技术栈，重点准备项目深挖'
+      :cov>=40?'匹配度中等：缺失项集中在高频词，优先补齐或准备解释话术'
+      :'匹配度偏低：建议针对性改简历，或在面试前系统补齐缺失项')+'</div></div>';
+  hl+='<div style="margin-top:14px"><b style="font-size:13.5px">❌ 缺失关键词（按 JD 出现频次排序）</b><div style="margin-top:6px">'+chips(miss.slice(0,20),'#E67E22')+'</div></div>';
+  hl+='<div style="margin-top:14px"><b style="font-size:13.5px">✅ 已命中关键词</b><div style="margin-top:6px">'+chips(hit.slice(0,24),'#12C87A')+'</div></div>';
+  hl+='<div style="margin-top:14px"><b style="font-size:13.5px">📚 缺失项速学卡片（每张 10 分钟搭起认知框架）</b>'
+    +miss.slice(0,8).map(function(o){return kbCard(o.k)}).join('')
+    +(miss.length>8?'<div class="hint" style="margin-top:6px">其余 '+ (miss.length-8) +' 项频次较低，优先攻克上面 8 项。</div>':'')+'</div>';
+  var md='## 面试准备提纲\n\n### 1. 自我介绍（30-60 秒版本）\n- 突出命中权重最高的 2-3 项：'+hit.slice(0,3).map(function(o){return o.k}).join('、')+'\n- 结构：基本情况 → 最匹配的一段项目（STAR 法则）→ 为什么投这个岗位\n\n### 2. 缺失项预案（按优先级）\n';
+  miss.slice(0,8).forEach(function(o,i){md+=(i+1)+'. '+o.k+'：准备「基础概念 + 相关经验迁移 + 学习计划」三段式回答\n';});
+  md+='\n### 3. 项目深挖预案\n- 背景与难点 → 我的方案与取舍 → 量化结果（性能 / 稳定性 / 业务指标）→ 复盘与改进\n\n### 4. 反问环节（准备 2-3 个）\n- 团队规模与分工、技术栈演进方向、入职前 3 个月的期望产出\n';
+  window.jdMd=md;
+  hl+='<div style="margin-top:14px"><b style="font-size:13.5px">📋 自动生成的面试准备提纲</b>'
+    +'<pre style="white-space:pre-wrap;background:#F8FAF9;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:12.5px;margin-top:8px;font-family:inherit">'+md.replace(/</g,'&lt;')+'</pre>'
+    +'<button class="btn btn-ghost btn-sm" onclick="copyText(this,jdMd)">复制提纲</button></div>';
+  hl+='<div class="tipbox">💡 用法：把缺失项按条数从上到下补——JD 里出现 2 次以上的词，大概率是面试官的必问题。</div>';
+  document.getElementById('jdRes').innerHTML=hl;
+}
+function copyText(btn,txt){
+  var done=function(){btn.textContent='✓ 已复制';setTimeout(function(){btn.textContent='复制提纲'},1500);};
+  try{navigator.clipboard.writeText(txt).then(done,function(){
+    var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');ta.remove();done();});
+  }catch(e){done();}
+}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+/* ═══════════ P6 面试复盘库 ═══════════ */
+var K_INT='wdc_interviews_v1';
+function getInts(){try{return JSON.parse(localStorage.getItem(K_INT)||'[]')}catch(e){return[]}}
+function saveInterview(){
+  var co=v('iCo');
+  if(!co){alert('请填写公司名');return;}
+  var q=v('iQ').split('\n').map(function(s){return s.trim()}).filter(Boolean);
+  var it={co:co,pos:v('iPos'),date:v('iDate'),round:v('iRound'),cat:v('iCat'),q:q,note:v('iN'),ts:Date.now()};
+  var arr=getInts(); arr.unshift(it);
+  try{localStorage.setItem(K_INT,JSON.stringify(arr))}catch(e){alert('保存失败：浏览器本地存储不可用');return;}
+  ['iCo','iPos','iQ','iN'].forEach(function(id){document.getElementById(id).value=''});
+  document.getElementById('iCat').value='auto';
+  renderInts();
+}
+function delInt(i){
+  if(!confirm('删除这条复盘？'))return;
+  var arr=getInts();arr.splice(i,1);
+  localStorage.setItem(K_INT,JSON.stringify(arr));renderInts();
+}
+function clearInterviews(){
+  if(!confirm('确定清空全部面试复盘记录？此操作不可恢复。'))return;
+  localStorage.removeItem(K_INT);renderInts();
+}
+function renderInts(){
+  var arr=getInts(), el=document.getElementById('intList');
+  if(!arr.length){el.innerHTML='<div class="tipbox">还没有记录。面完试来记一笔，下次面试前这里就是你的军火库。</div>';return;}
+  var stats={};
+  arr.forEach(function(it){(it.q||[]).forEach(function(q){var c=qcat(it,q);stats[c]=(stats[c]||0)+1;});});
+  var chips=Object.keys(stats).sort(function(a,b){return stats[b]-stats[a]})
+    .map(function(c){return '<span class="catb" style="font-size:11.5px;padding:2px 10px;background:var(--brandbg);color:var(--brand2)">'+c+' '+stats[c]+'</span>'}).join(' ');
+  el.innerHTML='<div style="margin-top:6px"><b style="font-size:13.5px">📚 已存 '+arr.length+' 条复盘 · 跨公司错题分布：</b> '+chips+'</div>'
+    +arr.map(function(it,i){
+      return '<div class="offer-card" style="margin-top:12px"><div class="ohd"><h3>'+esc(it.co)+(it.pos?' · '+esc(it.pos):'')+'</h3>'
+        +'<button class="btn btn-sm btn-del" onclick="delInt('+i+')">删除</button></div>'
+        +'<div style="font-size:12px;color:var(--ink3);margin-bottom:6px">'+esc(it.date||'日期未填')+' · '+esc(it.round||'')+'</div>'
+        +(it.q&&it.q.length?'<div style="font-size:13px"><b style="font-size:12.5px;color:var(--warn)">被问住的点：</b><ul style="padding-left:18px;font-size:13px;color:var(--ink2)">'+it.q.map(function(q){return '<li><span class="catb">'+esc(qcat(it,q))+'</span>'+esc(q)+'</li>'}).join('')+'</ul></div>':'')
+        +(it.note?'<div style="font-size:13px;color:var(--ink2)"><b style="font-size:12.5px;color:var(--brand2)">复盘笔记：</b>'+esc(it.note).replace(/\n/g,'<br>')+'</div>':'')
+        +'</div>';
+    }).join('');
+}
+function exportInterviews(){
+  var arr=getInts();
+  if(!arr.length){alert('还没有复盘记录');return;}
+  var CATS=['基础八股','操作系统与网络','数据库与缓存','分布式与架构','系统设计','项目深挖','算法手撕','场景与开放题','HR 与软素质','其他'];
+  var byCo={}, byCat={};
+  CATS.forEach(function(c){byCat[c]=[]});
+  arr.forEach(function(it){
+    (byCo[it.co]=byCo[it.co]||[]).push(it);
+    (it.q||[]).forEach(function(q){
+      byCat[qcat(it,q)].push({co:it.co,date:it.date,round:it.round,q:q});
+    });
+  });
+  var md='# 面试复盘综合文档\n\n> 共 '+arr.length+' 条记录 · '+new Date().toLocaleDateString('zh-CN')+' 导出 · 由「打工人决策台」生成\n\n## 一、按类别汇总（跨公司错题本）\n';
+  CATS.forEach(function(c){
+    if(!byCat[c].length)return;
+    md+='\n### '+c+'（'+byCat[c].length+' 题）\n';
+    byCat[c].forEach(function(o){ md+='- **['+o.co+(o.date?' · '+o.date:'')+(o.round?' · '+o.round:'')+']** '+o.q+'\n'; });
+  });
+  md+='\n## 二、按公司时间线\n';
+  Object.keys(byCo).forEach(function(co){
+    md+='\n### '+co+'\n';
+    byCo[co].forEach(function(it){
+      md+='\n#### '+(it.date||'日期未填')+' · '+(it.round||'')+(it.pos?'（'+it.pos+'）':'')+'\n';
+      if(it.q&&it.q.length){ md+='**被问住的点：**\n'; it.q.forEach(function(q){md+='- ['+qcat(it,q)+'] '+q+'\n';}); }
+      if(it.note) md+='\n**复盘笔记：**\n\n'+it.note+'\n';
+    });
+  });
+  md+='\n## 三、高频薄弱点（同题被问住 ≥2 次）\n';
+  var freq={};
+  arr.forEach(function(it){(it.q||[]).forEach(function(q){freq[q]=(freq[q]||0)+1;});});
+  var top=Object.keys(freq).filter(function(q){return freq[q]>1}).sort(function(a,b){return freq[b]-freq[a]});
+  if(top.length){ top.forEach(function(q){md+='- '+q+'（出现 '+freq[q]+' 次，必须准备标准答案）\n';}); }
+  else md+='- 暂无重复出现的薄弱点，继续保持\n';
+  var blob=new Blob([md],{type:'text/markdown;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='面试复盘综合文档.md';a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+}
+renderInts();
+
+function cmpOffers(){
+  var cards=document.querySelectorAll('.offer-card');
+  if(cards.length<2){alert('请至少保留 2 个 Offer 再对比');return;}
+  var data=[];
+  cards.forEach(function(c){
+    var i=c.id.slice(2);
+    var sal=num('oSal'+i), mon=parseFloat(v('oMon'+i))||12;
+    var bon=num('oBon'+i), fund=num('oFund'+i), eq=num('oEq'+i);
+    var ot=num('oOt'+i), cm=num('oCm'+i);
+    var name=v('oName'+i)||('Offer '+(i+1));
+    if(!sal){return;}
+    var cash=sal*mon+bon;
+    var fundY=sal*fund/100*12;             /* 公司+个人合计进入个人账户 */
+    var total=cash+fundY+eq;
+    var hoursY=(40+ot)*48;                 /* 年工时：48 工作周 */
+    var hourly=hoursY>0?cash/hoursY:0;
+    var commuteY=cm*2*250/60;              /* 年通勤小时：250 个工作日 */
+    data.push({name:name,sal:sal,mon:mon,bon:bon,cash:cash,fundY:fundY,eq:eq,
+      total:total,hourly:hourly,commuteY:commuteY,color:COLORS[data.length%4]});
+  });
+  if(data.length<2){alert('请至少填写 2 个有月薪的 Offer');return;}
+  data.sort(function(a,b){return b.total-a.total;});
+  var maxT=data[0].total;
+  var rows='<div class="card" style="box-shadow:none;border:1px dashed var(--brandline);background:#FBFEFC">'
+    +'<table><tr><th>指标</th>'+data.map(function(d){
+      return '<th>'+d.name+(d===data[0]?'<span class="badge">最优</span>':'')+'</th>';}).join('')+'</tr>'
+    +'<tr><td>年现金总包（含浮动）</td>'+data.map(function(d){return '<td>¥'+fmt(d.cash)+'</td>';}).join('')+'</tr>'
+    +'<tr><td>公积金年缴存（个人+公司）</td>'+data.map(function(d){return '<td>¥'+fmt(d.fundY)+'</td>';}).join('')+'</tr>'
+    +'<tr><td>期权/股票折算</td>'+data.map(function(d){return '<td>¥'+fmt(d.eq)+'</td>';}).join('')+'</tr>'
+    +'<tr><td><b>综合年包</b></td>'+data.map(function(d){return '<td>¥'+fmt(d.total)+'</td>';}).join('')+'</tr>'
+    +'<tr><td>平均时薪（现金口径）</td>'+data.map(function(d){return '<td>¥'+fmt1(d.hourly)+'/h</td>';}).join('')+'</tr>'
+    +'<tr><td>年通勤时间</td>'+data.map(function(d){return '<td>'+fmt1(d.commuteY)+' 小时</td>';}).join('')+'</tr>'
+    +'</table><div class="barw">'
+    +data.map(function(d){
+      return '<div class="brow"><div class="bl" title="'+d.name+'">'+d.name+'</div>'
+      +'<div class="bt"><div class="bf" style="width:'+(d.total/maxT*100)+'%;background:'+d.color+'"></div></div>'
+      +'<div class="bv">¥'+fmt(d.total)+'</div></div>';}).join('')
+    +'</div>';
+  var w=data[0], l=data[data.length-1];
+  var advice='<div class="kpi" style="margin-top:14px"><div class="big">「'+w.name+'」<small>综合年包最高</small></div>'
+    +'<div class="cap">比「'+l.name+'」多 ¥'+fmt(w.total-l.total)+'/年；平均时薪 ¥'+fmt1(w.hourly)+'/h';
+  if(w.commuteY>l.commuteY+10){
+    advice+='，但每年通勤要多花 '+fmt1(w.commuteY-l.commuteY)+' 小时——按时薪算，约等于少赚 ¥'+fmt((w.commuteY-l.commuteY)*w.hourly);
+  }
+  advice+='</div></div>';
+  advice+='<div class="tipbox">💡 决策提示：① 期权按 0 估值看也不亏的 Offer 才更稳；② 时薪比总包更能反映生活质量；③ 公积金按 12% 缴存的 Offer，隐含 1—2 个月的隐形加薪（可提取/抵房贷）。</div>';
+  document.getElementById('cmpRes').innerHTML=rows+advice;
+}
+
+/* ═══════════ P2 离职补偿 ═══════════ */
+function calcComp(){
+  var din=v('cIn'), dout=v('cOut'), sal=num('cSal'), avg=num('cAvg'), type=v('cType');
+  if(!din||!dout||!sal){alert('请填写入职日期、离职日期和平均工资');return;}
+  var d1=new Date(din), d2=new Date(dout);
+  if(d2<=d1){alert('离职日期需要晚于入职日期');return;}
+  var months=(d2.getFullYear()-d1.getFullYear())*12+(d2.getMonth()-d1.getMonth());
+  if(d2.getDate()<d1.getDate())months--;
+  months=Math.max(0,months);
+  var years=Math.floor(months/12), rem=months%12;
+  var n=years+(rem>=6?1:(rem>0?0.5:0));
+  var capped=false, base=sal;
+  if(avg>0 && sal>3*avg){ base=3*avg; capped=true; n=Math.min(n,12); }
+  var amount=base*n, extra=0;
+  var typeName='';
+  if(type==='n1'){ extra=base; typeName='无过失性辞退（N+1）'; }
+  else if(type==='2n'){ amount*=2; typeName='违法解除赔偿金（2N）'; }
+  else if(type==='n'){ typeName='协商解除 / 裁员 / 合同到期不续（N）'; }
+  else { amount=0; typeName='主动辞职'; }
+  var total=amount+extra;
+  var worklen=years+' 年'+(rem?rem+' 个月':'整');
+  var html='<div class="kpi"><div class="big">¥ '+fmt(total)+'<small> 估算补偿总额</small></div>'
+    +'<div class="cap">'+typeName+' · 工龄 '+worklen+'（折算 '+n+' 个月）</div></div>';
+  html+='<div style="margin-top:14px"><table>'
+    +'<tr><td>经济补偿年限（N）</td><td>'+n+' 个月</td></tr>'
+    +'<tr><td>补偿基数（月均应发工资）</td><td>¥'+fmt(base)+(capped?'（已按社平 3 倍封顶）':'')+'</td></tr>'
+    +(extra?'<tr><td>代通知金（+1，未提前 30 日通知时）</td><td>¥'+fmt(extra)+'</td></tr>':'')
+    +(type==='2n'?'<tr><td>赔偿金 = 2 × N</td><td>¥'+fmt(amount)+'</td></tr>':'')
+    +'<tr><td><b>合计</b></td><td><b>¥'+fmt(total)+'</b></td></tr></table></div>';
+  html+='<div class="note"><b>计算口径说明</b><br>'
+    +'· 工龄每满 1 年补 1 个月；满 6 个月不满 1 年按 1 年算；不满 6 个月补半个月（第 47 条）<br>'
+    +'· 月工资超过当地社平 3 倍的，基数按 3 倍封顶、年限最长 12 年（高收入封顶）<br>'
+    +'· N+1 中的"1"是代通知金，仅适用于按第 40 条解除且未提前 30 日书面通知的情形<br>'
+    +'· 2N（赔偿金）适用于违法解除，由仲裁/法院认定，实践中多数劳动仲裁会支持 2N 或恢复劳动关系<br>'
+    +'· 月均工资按离职前 12 个月<b>应发</b>（含奖金、津贴、加班费）计算，不是基本工资</div>';
+  html+='<div class="tipbox">💡 谈判提示：法定金额是底线不是上限。工龄长、绩效记录好、掌握核心交接工作的，协商解除时通常有上浮空间；同时把未休年假折算、当月社保公积金、期权归属窗口一并谈进方案。</div>';
+  document.getElementById('compRes').innerHTML=html;
+}
+
+/* ═══════════ P3 年终奖个税 ═══════════ */
+var BRK=[[36000,.03,0],[144000,.10,2520],[300000,.20,16920],
+  [420000,.25,31920],[660000,.30,52920],[960000,.35,85920],[Infinity,.45,181920]];
+function taxOf(x){
+  for(var i=0;i<BRK.length;i++){ if(x<=BRK[i][0]) return x*BRK[i][1]-BRK[i][2]; }
+  return 0;
+}
+function calcBonus(){
+  var bonus=num('bBonus');
+  if(bonus<=0){alert('请填写年终奖金额');return;}
+  var salary=num('bSalary'), sb=num('bSb'), kk=num('bKk');
+  /* A. 单独计税 */
+  var mA=bonus/12, rateA=0, dedA=0;
+  for(var i=0;i<BRK.length;i++){ if(mA<=BRK[i][0]){rateA=BRK[i][1];dedA=BRK[i][2];break;} }
+  var taxA=bonus*rateA-dedA, netA=bonus-taxA;
+  /* B. 并入综合所得 */
+  var html='', hasB=salary>0;
+  var bRow='<div class="kpi"><div class="big">¥ '+fmt(netA)+'<small> 单独计税到手</small></div>'
+    +'<div class="cap">税率 '+Math.round(rateA*100)+'% · 缴税 ¥'+fmt(taxA)+' · 速算扣除 ¥'+fmt(dedA)+'</div></div>';
+  if(hasB){
+    var deductible=sb+kk+60000;
+    var taxableNo=Math.max(0,salary-deductible);
+    var taxableWith=Math.max(0,salary+bonus-deductible);
+    var taxNo=taxOf(taxableNo), taxWith=taxOf(taxableWith);
+    var taxB=taxWith-taxNo, netB=bonus-taxB;
+    html+=bRow
+      +'<div class="kpi" style="margin-top:12px;background:linear-gradient(135deg,#EFF5FF,#F8FBFF);border-color:#CDE3FB">'
+      +'<div class="big" style="color:var(--blue)">¥ '+fmt(netB)+'<small> 并入综合所得到手</small></div>'
+      +'<div class="cap">年终奖部分多缴 ¥'+fmt(taxB)+' · 综合应纳税所得额 ¥'+fmt(taxableWith)+'</div></div>';
+    if(netA>=netB){
+      html+='<div class="note"><b>结论：选「单独计税」，多到手 ¥'+fmt(netA-netB)+'</b><br>'
+        +'你的综合所得已经适用较高税率，年终奖单独计税可以享受更低的换算税率，这是政策给你的合法红利（延续至 2027-12-31）。</div>';
+    }else{
+      html+='<div class="tipbox" style="background:var(--brandbg);border-color:var(--brandline);color:#0c6b45"><b>结论：选「并入综合所得」，多到手 ¥'+fmt(netB-netA)+'</b><br>'
+        +'你的综合所得较低（甚至为负），年终奖并入后仍然落在低税率档，单独计税反而亏了速算扣除。</div>';
+    }
+  }else{
+    html+=bRow+'<div class="tipbox">💡 填写全年工资收入后，还会自动对比「并入综合所得」方案——低收入年份并入更划算，高收入年份单独计税更划算。</div>';
+  }
+  /* 无效区间 */
+  var traps=[[36000,38566.67],[144000,160500],[300000,318333.33],[420000,447500],[660000,706538.46],[960000,1120000]];
+  var hit=null;
+  for(var j=0;j<traps.length;j++){ if(bonus>traps[j][0]&&bonus<=traps[j][1]){hit=traps[j];break;} }
+  if(hit){
+    var taxT=hit[0]*rateA-dedA;
+    html+='<div class="note"><b>⚠️ 你正处在「无效区间」！</b><br>'
+      +'年终奖 '+fmt(hit[0])+'—'+fmt(hit[1])+' 元之间的税后收入，反而低于刚好 '+fmt(hit[0])+' 元时的税后收入'
+      +'（多发一元，多缴一档税）。建议与 HR 沟通将年终奖定为 <b>'+fmt(hit[0])+' 元</b>'
+      +'，差额部分并入工资或下期发放，仅此一项可多拿 ¥'+fmt((hit[0]-taxT)-(bonus-taxA))+'。</div>';
+  }
+  html+='<div class="note"><b>口径说明</b><br>· 单独计税：按年终奖÷12 找月度税率，但按全额计税（不再减除费用）<br>'
+    +'· 并入综合所得：与全年工资合并后按年表计税，起征点 6 万/年<br>'
+    +'· 未考虑其他综合所得（稿酬、劳务报酬、股权激励等），实际以个税 APP 汇算清缴为准</div>';
+  document.getElementById('bonusRes').innerHTML=html;
+}
+
+/* ═══════════ 分类：手动指定 或 关键词自动归类 ═══════════ */
+function autoCat(q){
+  var r=[[/(redis|mysql|索引|sql|mongo|elastic|缓存|数据库|分库|mvcc)/i,'数据库与缓存'],
+    [/(多线程|线程池|锁|jvm|gc|内存模型|hashmap|concurren|指针|虚函数|stl|协程|volatile|lambda|闭包)/i,'基础八股'],
+    [/(tcp|udp|http|网络|epoll|io多路|socket|操作系统|进程|中断|内核|linux|编译)/i,'操作系统与网络'],
+    [/(分布式|微服务|kafka|消息队列|一致性|cap|zookeeper|etcd|注册中心|rpc|docker|k8s|kubernetes|高并发|限流|熔断|网关)/i,'分布式与架构'],
+    [/(系统设计|架构设计|秒杀|抢红包|短链|feed|设计一个|限流)/i,'系统设计'],
+    [/(项目|你负责|难点|挑战|方案选型|优化了|重构|线上事故)/i,'项目深挖'],
+    [/(算法|leetcode|手撕|动态规划|链表|二叉树|时间复杂度|反转|排序)/i,'算法手撕'],
+    [/(场景|开放|如果|假设|怎么办|排查|线上|故障)/i,'场景与开放题'],
+    [/(离职|薪资|期望|加班|优缺点|职业规划|为什么|自我介绍|团队|管理)/i,'HR 与软素质']];
+  for(var i=0;i<r.length;i++){if(r[i][0].test(q))return r[i][1];}
+  return '其他';
+}
+function qcat(it,q){
+  if(it.cat&&it.cat!=='auto')return it.cat;
+  return autoCat(q);
+}
+
+/* ═══════════ 缺失项速学卡片知识库 ═══════════ */
+var KB={
+'redis':{t:'Redis',d:'内存键值数据库：单线程命令处理 + IO 多路复用，主要用作缓存、分布式锁和计数器。',p:['5 种核心结构：String / Hash / List / Set / ZSet（ZSet 跳表常被追问）','持久化：RDB 快照（快、可能丢数据）vs AOF 日志（更安全、文件大），生产常混合','过期删除（惰性+定期）与内存淘汰策略（LRU / LFU）','缓存三问：穿透→布隆过滤器+空值缓存；击穿→互斥重建+逻辑过期；雪崩→过期时间加随机'],qa:[['Redis 为什么快？','纯内存操作；单线程避免锁竞争；IO 多路复用；高效数据结构；6.0 起网络 IO 多线程。'],['如何用 Redis 做分布式锁？','SET key unique NX PX 30000，Lua 脚本原子释放；主从切换丢锁是 Redlock 争议点，能答到这层即加分。']],path:'官方文档过数据类型 → 本地跑通 5 种结构 → 手写分布式锁 → 看缓存三问生产案例'},
+'mysql':{t:'MySQL',d:'最常用的开源关系型数据库：B+ 树索引 + 事务 + MVCC。',p:['索引：B+ 树、聚簇 vs 二级、最左前缀、覆盖索引、回表','事务 ACID 与隔离级别，MVCC 快照读','日志：redo（崩溃恢复）/ undo（回滚）/ binlog（复制）','优化抓手：慢查询 → explain（type/rows/extra）→ 索引与 SQL 改写'],qa:[['为什么 B+ 树而不是哈希/B 树？','哈希不支持范围查询；B+ 树数据全在叶子且叶子成链表，范围扫描友好、树更矮 IO 更少。'],['什么是回表？如何避免？','二级索引只存主键，查非索引列需回聚簇索引再查一次；用覆盖索引把所需列放进索引可避免。']],path:'先懂 explain → 索引设计原则 → 事务与 MVCC → 主从与分库分表'},
+'kafka':{t:'Kafka',d:'高吞吐分布式消息队列：顺序写磁盘 + 零拷贝 + 分区并行。',p:['概念：Topic / Partition / Consumer Group / Offset','可靠性：acks=all + 副本 + ISR；幂等生产者防重','顺序性：仅分区内有序，业务按 key 路由','定位：日志管道与大数据吞吐之王，业务事务消息看 RocketMQ'],qa:[['消息重复消费怎么办？','Kafka 至少一次语义，靠消费端幂等（唯一键 / 去重表）兜底。']],path:'本地单机跑通生产消费 → 理解 rebalance → 读 ISR 与 HW 机制'},
+'消息队列':{t:'消息队列',d:'异步架构三件套：削峰、解耦、异步；选型看吞吐与功能。',p:['三大场景：削峰填谷、服务解耦、异步化','选型：Kafka（日志/大吞吐）、RocketMQ（业务/事务消息）、RabbitMQ（低延迟/灵活路由）','四个经典问题：丢消息、重复消费、顺序、积压'],qa:[['消息大量积压怎么办？','先定位消费慢的原因（下游慢/消费者挂）；扩消费者+扩分区，或临时转储再回放。']],path:'先用起来 → 深挖一个 MQ 的存储模型（推荐 Kafka）'},
+'docker':{t:'Docker',d:'容器 = 有隔离和资源限制的进程：Namespace 隔离视图，Cgroups 限资源，镜像分层。',p:['镜像分层 + UnionFS；Dockerfile 最佳实践（小基础镜像、多阶段构建）','容器 vs 虚拟机：共享内核、秒级启动','网络：bridge / host / none；数据用 volume'],qa:[['容器和虚拟机的区别？','VM 虚拟整套硬件与内核，重；容器共享宿主内核只隔离进程视图，轻但隔离性弱。']],path:'官网 30 分钟教程 → 给自己的项目写 Dockerfile → 理解分层与 volume'},
+'kubernetes':{t:'Kubernetes',d:'容器编排平台：声明式 API + 控制循环，管容器的一生。',p:['核心对象：Pod / Deployment / Service / Ingress / ConfigMap','自愈与调度：期望副本 vs 实际副本，探针（liveness/readiness）','本地 minikube / k3s 即可上手'],qa:[['Pod 和容器什么关系？','Pod 是最小调度单元，可含多个共享网络/存储的容器（sidecar 模式）。']],path:'minikube 跑通 nginx → 手写 Deployment+Service YAML → 理解控制器模式'},
+'分布式':{t:'分布式系统',d:'多机协同：绕不开 CAP、一致性与容错。',p:['CAP：分区容错必选，P 下权衡 C 与 A','一致性哈希解决节点增减的数据迁移','分布式 ID：雪花算法 / 号段模式','选主与脑裂：Raft 的 Leader 选举'],qa:[['Raft 解决什么问题？','分布式日志复制的一致性：选举 + 复制 + 安全性，Paxos 的可理解替代品。']],path:'看 Raft 动画讲解 → 看工业实现（etcd）→ 手画选主时序'},
+'分布式事务':{t:'分布式事务',d:'跨服务/跨库事务：2PC / TCC / 本地消息表 / 事务消息。',p:['2PC 强一致但同步阻塞；互联网多用柔性事务（最终一致）','本地消息表 / 事务消息：消息落库 + 对账兜底','TCC：Try-Confirm-Cancel，性能好但业务侵入大','所有方案的前提：幂等'],qa:[['为什么很少用 XA？','同步阻塞、协调者单点、吞吐低，最终一致性方案更实用。']],path:'理解 CAP → 手画本地消息表时序图 → 看一个对账案例'},
+'微服务':{t:'微服务',d:'按业务拆分、独立部署：换来弹性，带来分布式复杂度。',p:['拆分粒度：按业务能力，警惕「分布式单体」','治理：注册发现、负载均衡、熔断降级','链路追踪：TraceID 贯穿全链路','跨服务调用要想清：幂等、超时、重试风暴'],qa:[['微服务最大的代价？','分布式复杂性：网络不可靠、数据一致性、排障难，小团队别盲目拆。']],path:'先做好单体模块化 → 学注册/熔断/追踪三件套 → 看演进案例'},
+'高并发':{t:'高并发',d:'三板斧：缓存、异步、水平扩展，核心是保护数据库。',p:['读多写少→多级缓存；写多→MQ 削峰','限流：计数器 / 漏桶 / 令牌桶','池化与无状态化：无状态才能横向扩容'],qa:[['秒杀系统怎么设计？','前端限流 → 网关令牌桶 → Redis 预扣库存（Lua 原子）→ MQ 异步落库 → 兜底对账。']],path:'把三件套套到自己做过的系统上，练一次口头设计'},
+'jvm':{t:'JVM',d:'Java 运行时：内存区域 + 类加载 + GC 三大件。',p:['内存：堆 / 虚拟机栈 / 方法区 / 程序计数器','类加载五阶段与双亲委派','常用参数：-Xms / -Xmx / GC 日志'],qa:[['对象一定在堆上分配吗？','不一定，逃逸分析后可能栈上分配 / 标量替换。']],path:'画内存区域图 → 用 jstat 观察一次 GC 全过程'},
+'gc':{t:'垃圾回收 GC',d:'可达性分析判活，分代假设指导回收策略。',p:['新生代 Minor GC（复制算法）vs 老年代','收集器演进：CMS → G1 → ZGC（停顿越来越短）','调优先定位：GC 日志 → 吞吐还是延迟优先'],qa:[['什么对象会进老年代？','大对象直接进；年龄达标晋升；动态年龄判断提前晋升。']],path:'理解分代 → 对比 G1 与 CMS → 用工具排查一次内存泄漏'},
+'多线程':{t:'多线程',d:'并发三问题：可见性、原子性、有序性。',p:['volatile：可见性 + 有序性，不保证原子性','synchronized vs Lock 的取舍','死锁四条件与破坏思路；CAS 与 ABA'],qa:[['volatile 有什么用？','写立即刷主存、读失效缓存行，禁止指令重排；但 i++ 依然不安全。']],path:'手写生产者消费者 → 复现一次死锁 → 读 JMM 摘要'},
+'线程池':{t:'线程池',d:'复用线程避免频繁创建销毁，参数与拒绝策略是必问点。',p:['核心参数：core / max / keepAlive / workQueue / 拒绝策略','执行顺序：核心线程 → 队列 → 非核心线程 → 拒绝','实践：不用 Executors 预设池（无界队列 OOM 风险）'],qa:[['队列满了会怎样？','扩到 max 再满则触发拒绝；CallerRuns 可反压上游。']],path:'手写简易线程池 → 压测对比参数组合'},
+'epoll':{t:'epoll / IO 多路复用',d:'Linux 高性能网络核心：一个线程管海量连接。',p:['select/poll O(n) 遍历 vs epoll O(1) 就绪链表','LT（会重复通知）vs ET（一次，需读尽）','Nginx / Redis / Netty 的共同底座'],qa:[['epoll 为什么快？','内核维护关注列表免全量拷贝，就绪事件回调入链表，只遍历就绪连接。']],path:'写 select 版 vs epoll 版 echo server → 压测对比'},
+'tcp':{t:'TCP',d:'可靠传输：连接管理、滑动窗口、拥塞控制。',p:['三次握手 / 四次挥手与原因','TIME_WAIT 为什么 2MSL','重传：超时 + 快速重传（3 个重复 ACK）','流量控制（对端）vs 拥塞控制（网络）'],qa:[['为什么三次握手？','双方都要确认收发能力，并防止历史失效连接请求建立连接。']],path:'Wireshark 抓一次完整握手挥手 → 手画状态机'},
+'算法':{t:'算法与数据结构',d:'手撕核心：结构 + 题型模板 + 表达。',p:['必会：链表 / 栈队列 / 哈希 / 二叉树 / 堆 / 图','套路：双指针、滑动窗口、二分、DFS/BFS、DP','策略：Hot 100 按题型归类，错题重做'],qa:[['拿到题先做什么？','复述确认题意边界 → 给暴力解和复杂度 → 再优化，边写边沟通。']],path:'Hot 100 → 每类总结模板 → 面试前只重做错题'},
+'索引':{t:'数据库索引',d:'有序数据结构换查询速度，写多时是负担。',p:['B+ 树特性：矮、叶子链表、适合磁盘','最左前缀 / 覆盖索引 / 索引下推','失效：函数、隐式转换、or、前导模糊'],qa:[['联合索引 (a,b,c)，where b=1 能走吗？','不满足最左前缀，不能；除非整索引被覆盖扫描。']],path:'用 explain 逐条验证规则 → 总结成 checklist'},
+'elasticsearch':{t:'Elasticsearch',d:'倒排索引驱动的分布式搜索与分析引擎。',p:['倒排索引：词 → 文档列表；中文分词是关键','近实时：buffer + translog，refresh 生成 segment','分片路由：hash(_id) % shard 数'],qa:[['为什么是近实时不是实时？','写入需 refresh（默认 1s）生成可搜索 segment。']],path:'docker 起 ES+Kibana → 建索引导数据 → 练 match 与聚合'},
+'大模型':{t:'大模型 / LLM',d:'Transformer 生成式模型：预训练 + 对齐两阶段。',p:['自注意力机制；上下文窗口与 token','训练范式：预训练 → SFT → RLHF','应用范式：RAG / 微调 / Agent 工具调用','推理要素：温度、KV cache、显存估算'],qa:[['RAG 解决什么问题？','知识时效与私有知识：外挂检索拼 prompt，避免幻觉与重训成本。']],path:'调 API 搭一个 RAG demo → 理解 embedding → 关注 Agent 演进'},
+'rag':{t:'RAG 检索增强',d:'先检索再生成，给模型「开卷考试」。',p:['流程：切片 → embedding → 向量库 → 召回 top-k → 拼 prompt','分块策略对效果影响最大；进阶用混合检索 + rerank','常见失败：切片烂、召回不准、prompt 无约束'],qa:[['为什么 RAG 比微调更适合知识更新？','微调改「能力」且贵、易遗忘；RAG 改「知识」，换库即生效。']],path:'跑通一个 RAG demo → 自己调分块与重排'},
+'嵌入式':{t:'嵌入式开发',d:'资源受限下的软硬件协同：交叉编译、RTOS/裸机、外设。',p:['范式：交叉编译 → 烧录 → JTAG/GDB 调试','启动链：BootROM → U-Boot → 内核 → 根文件系统','外设：UART / I2C / SPI / CAN 的时序与多机','资源意识：内存对齐、堆栈配比、功耗'],qa:[['为什么要交叉编译？','宿主机与目标机指令集和 ABI 不同（x86 编译 → arm 运行），必须用目标平台工具链。']],path:'STM32/树莓派点灯 → UART 收发 → 跑通一个 RTOS 任务'},
+'驱动开发':{t:'Linux 驱动开发',d:'内核态代码：把硬件抽象成统一接口给上层。',p:['字符设备：file_operations 模型','总线-设备-驱动模型与设备树（DTS）','中断上下半部：上半部快、下半部（workqueue）慢','并发访问硬件：自旋锁 / 信号量'],qa:[['中断为什么分上下半部？','上半部快速响应并屏蔽中断，耗时操作放下半部，避免丢中断与卡顿。']],path:'写字符设备驱动 → 点亮 GPIO → 读设备树绑定关系'},
+'qt':{t:'Qt',d:'跨平台 C++ GUI 框架，信号槽是灵魂。',p:['信号槽：松耦合对象通信，支持跨线程队列连接','事件循环与自定义控件','UI 线程与工作线程分离'],qa:[['信号槽和回调的区别？','不需要知道接收者、类型安全、支持跨线程队列调用。']],path:'官方 tutorial → 写一个多线程串口工具'},
+'音视频':{t:'音视频',d:'采集→编码→传输→解码→渲染流水线。',p:['编码：H.264/H.265（I/P/B 帧、GOP）、AAC/Opus','传输：RTSP（监控）/ RTMP（推流）/ WebRTC（互动）','播放器核心：音视频同步（以音频为时钟）'],qa:[['直播延迟主要耗在哪？','编码缓冲、推流协议、服务端转码分发、播放端缓冲，逐段削。']],path:'ffmpeg 走一遍转码推流 → 读一个开源播放器'},
+'webrtc':{t:'WebRTC',d:'浏览器原生实时音视频：亚秒级延迟，P2P 优先。',p:['三 API：getUserMedia / RTCPeerConnection / DataChannel','NAT 穿透：STUN / TURN / ICE','抗弱网：NACK / FEC / JitterBuffer / 动态码率'],qa:[['为什么比 RTMP 延迟低？','UDP + RTP、无缓冲等待、实时拥塞控制，用部分可靠性换低延迟。']],path:'跑官方 1:1 demo → 自建 STUN/TURN → 抓包看 ICE'},
+'ffmpeg':{t:'FFmpeg',d:'音视频处理瑞士军刀：转码、剪辑、推流一行命令。',p:['流水线：demux → decode → filter → encode → mux','常用：-c:v libx264 转码、-f flv rtmp:// 推流','硬件加速：NVENC / QSV / VAAPI'],qa:[['转码慢怎么办？','硬件编码器、调 preset 档位、可复制流用 -c copy。']],path:'练熟 10 条命令 → 写批量转码脚本 → 尝试 libav API 二开'},
+'性能优化':{t:'性能优化',d:'先测量后优化：没有 profile 的优化都是玄学。',p:['流程：建指标 → profile 定位热点 → 优化 → 回归','CPU 型看火焰图，IO 型看等待与吞吐','大招：缓存、批处理、异步化、算法降复杂度','警惕过早优化与局部最优'],qa:[['系统突然变慢怎么排查？','分层：CPU / 内存 / IO / 网络 → top、iostat、火焰图定位热点 → 判断代码问题还是容量问题。']],path:'给自己的项目做一次完整 profile 并写成案例'},
+'系统设计':{t:'系统设计',d:'从需求到架构：容量估算 → 核心数据流 → 权衡取舍。',p:['四步法：澄清需求 → 估算规模 → 画核心链路 → 细化与权衡','必会组件：LB / 缓存 / 分库分表 / MQ','永远主动谈 trade-off：一致性 vs 可用性、延迟 vs 成本'],qa:[['设计一个短链系统？','发号器生成 → 302 跳转 → 布隆过滤器防穿透 → 热点缓存 → 点击统计异步。']],path:'练 5 道经典：短链 / 秒杀 / feed 流 / IM / 网盘'},
+'linux':{t:'Linux',d:'服务器操作系统：一切皆文件，命令行即生产力。',p:['权限与用户组；进程管理 ps / top / kill','文本三剑客：grep / awk / sed','排查组合：top → iostat → ss → lsof'],qa:[['文件删了空间没释放？','进程仍持有句柄：lsof | grep deleted，重启进程或清空句柄。']],path:'把日常操作 shell 化 → 理解 /proc → 排查一个真实问题'},
+'c++':{t:'C++',d:'系统级语言：零成本抽象 + 现代 C++ 演进。',p:['内存：unique/shared/weak 智能指针替代裸 new/delete','对象模型：虚函数表、构造析构顺序、RAII','C++11 三件套：auto / lambda / 移动语义','并发：std::thread + atomic + memory_order'],qa:[['shared_ptr 线程安全吗？','引用计数原子安全，指向的对象不是；循环引用用 weak_ptr 破。']],path:'过 C++11 新特性 → 手写线程安全队列 → Effective Modern C++'},
+'java':{t:'Java',d:'生态最全的后端语言：JVM + Spring 双支柱。',p:['集合：ArrayList / HashMap 与并发版本差异','Spring 核心：IoC 容器与 AOP 代理','并发包：AQS 是 Lock / Semaphore 的地基'],qa:[['HashMap 1.7 与 1.8 区别？','1.7 头插+数组链表（并发死循环）；1.8 尾插+红黑树。']],path:'手写简化 HashMap → 跟一遍 Spring 启动流程'},
+'python':{t:'Python',d:'胶水语言：AI / 数据 / 脚本首选，GIL 绕不开。',p:['GIL：CPU 密集多线程无效，用 multiprocessing / asyncio','三大会考语法：装饰器、生成器、上下文管理器','数据栈：numpy / pandas'],qa:[['GIL 是什么？','全局解释器锁：同一时刻一个线程执行字节码；IO 密集可多线程，CPU 密集多进程。']],path:'写一个爬虫+数据处理脚本 → 吃透装饰器与生成器'},
+'golang':{t:'Go',d:'为并发与云原生而生：goroutine + channel。',p:['goroutine 轻量线程 + CSP（用 channel 通信而非共享内存）','编译快、部署单二进制；docker/k8s 均为 Go 写','defer / panic / recover；接口隐式实现'],qa:[['channel 什么时候死锁？','无缓冲双方阻塞、或向满且无消费者的 channel 发送，runtime 直接 panic。']],path:'官方 Tour → 写并发爬虫 → 读一段 k8s 组件源码'},
+'agent':{t:'AI Agent',d:'让 LLM 会用工具、能规划的多步执行体。',p:['循环：感知 → 规划 → 工具调用 → 观察 → 再规划','function calling 是能力边界','记忆：短期上下文 + 长期向量库'],qa:[['Agent 和普通 LLM 调用的区别？','多了「行动-观察」闭环，可根据工具结果继续决策。']],path:'用 function calling 写一个能查数据库的 agent'},
+'git':{t:'Git',d:'分布式版本控制：分支模型与协作流是核心。',p:['对象模型：commit/tree/blob；分支只是指针','常用进阶：rebase、cherry-pick、stash、reflog','团队流：feature 分支 + MR/PR + code review'],qa:[['merge 和 rebase 的区别？','merge 保留分叉历史多一次合并提交；rebase 线性化历史，公共分支上慎用。']],path:'练熟 rebase 与冲突解决 → 理解 reflog 找回提交'},
+'ci/cd':{t:'CI/CD',d:'持续集成/交付：提交即构建、测试、部署的自动化流水线。',p:['CI：每次提交跑构建+测试，早发现坏提交','CD：制品化 + 自动化部署，回滚预案必备','工具链：Jenkins / GitLab CI / GitHub Actions'],qa:[['流水线里最重要的环节？','自动化测试门禁与制品版本化——出问题能快速定位与回滚。']],path:'给自己项目配一条 Actions 流水线 → 加测试门禁 → 做成镜像部署'}};
+KB['k8s']=KB['kubernetes'];
+KB['llm']=KB['大模型'];
+function kbCard(k){
+  var c=KB[k];
+  if(!c){
+    c={t:k,d:'「'+k+'」暂无内置速学卡，用通用学习框架 10 分钟搭起认知骨架。',
+      p:['① 是什么：一句话说清它解决什么问题（搜「XX 入门」官方文档首篇）','② 什么时候用 / 不用：记 2 个典型场景 + 1 个反面场景','③ 最小上手：2 小时内跑通一个 demo，建立体感','④ 与已有经验的连接点：面试用「类似我做过 XX 中的 YY」迁移表达','⑤ 面试兜底话术：「这块我有概念层面的了解，实践主要在 XX，正在补深入」'],
+      qa:[['完全不会的题怎么答不失分？','坦诚边界 + 展示学习能力：说清已知程度、迁移经验、学习计划，比不懂装懂好得多。']],
+      path:'入门文章 → 跑 demo → 找「XX 面经」补高频问答 → 有余力再深入'};
+  }
+  var h='<details style="border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:8px;background:#FBFDFC">';
+  h+='<summary style="cursor:pointer;font-weight:700;font-size:13.5px">🔸 '+esc(c.t)+' <span style="font-weight:400;color:var(--ink3);font-size:12px">（关键词：'+esc(k)+'）</span></summary>';
+  h+='<div style="font-size:12.5px;color:var(--ink2);margin-top:8px"><b>一句话：</b>'+esc(c.d)+'</div>';
+  h+='<ul style="padding-left:18px;font-size:12.5px;color:var(--ink2);margin-top:6px">'+c.p.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>';
+  if(c.qa&&c.qa.length){h+='<div style="font-size:12.5px;margin-top:6px">'+c.qa.map(function(p){return '<div><b style="color:var(--brand2)">Q：'+esc(p[0])+'</b><br><span style="color:var(--ink2)">A：'+esc(p[1])+'</span></div><div style="height:6px"></div>'}).join('')+'</div>';}
+  h+='<div style="font-size:12px;color:var(--ink3);margin-top:4px"><b>学习路径：</b>'+esc(c.path)+'</div></details>';
+  return h;
+}
+
+/* ═══════════ 简历 / JD 本地自动保存 ═══════════ */
+var K_RES='wdc_resume_v1',K_JD='wdc_jd_v1';
+function autoSaveTa(key,id,hintId){
+  var e=document.getElementById(id); if(!e)return;
+  try{var s=localStorage.getItem(key); if(s&&s.length)e.value=s;}catch(err){}
+  var t=null;
+  e.addEventListener('input',function(){
+    clearTimeout(t);
+    t=setTimeout(function(){
+      try{localStorage.setItem(key,e.value)}catch(err){}
+      if(hintId){var h=document.getElementById(hintId);if(h)h.textContent='💾 已自动保存 · '+new Date().toLocaleTimeString('zh-CN');}
+    },400);
+  });
+}
+autoSaveTa(K_RES,'jRes','jResHint');
+autoSaveTa(K_JD,'jJd',null);
+</script>
+</body>
+</html>
