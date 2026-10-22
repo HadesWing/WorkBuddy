@@ -359,7 +359,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
     <a href="https://github.com/HadesWing/WorkBuddy" target="_blank" rel="noopener">📦 开源仓库</a> ·
     <a href="https://github.com/HadesWing/WorkBuddy/issues/new" target="_blank" rel="noopener">💬 反馈与建议</a><br>
     <span id="mkInstallWrap" style="display:none"><a href="javascript:installApp()">📱 安装到桌面 / 手机主屏</a><br></span>
-    🧭 打工人决策台 <span style="color:var(--ink3)">v1.2.0</span> · 用 WorkBuddy 制作 · 1024 程序员节 ·
+    🧭 打工人决策台 <span style="color:var(--ink3)">v1.3.0</span> · 用 WorkBuddy 制作 · 1024 程序员节 ·
     <a href="https://github.com/HadesWing/WorkBuddy/blob/main/CHANGELOG.md" target="_blank" rel="noopener">更新日志</a>
   </footer>
 </div>
@@ -2261,7 +2261,7 @@ function runSelfTest(){
     +'<button class="btn btn-sm btn-ghost" onclick="closeSelfTest()">关闭</button></div>'
     +'<div class="desc">'+pass+' 通过 / '+fail+' 失败（共 '+all+' 项）。断言直接调用页面<b>正在运行的同一份计算函数</b>，不是另写的示例数据。</div>'
     +'<table>'+rows.join('')+'</table>'
-    +'<div class="tipbox" style="margin-top:12px">完整套件在仓库 <code>tests/calc.test.js</code>（88 项断言），<code>node tests/calc.test.js</code> 可复现。发现算错的地方欢迎提 Issue。</div>';
+    +'<div class="tipbox" style="margin-top:12px">完整套件在仓库 <code>tests/calc.test.js</code>（120 项断言），<code>node tests/calc.test.js</code> 可复现。发现算错的地方欢迎提 Issue。</div>';
   document.getElementById('stOv').style.display='flex';
 }
 function closeSelfTest(){document.getElementById('stOv').style.display='none';}
