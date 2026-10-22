@@ -303,8 +303,15 @@ footer a{color:var(--brand2);text-decoration:none}
 
   <footer>
     计算结果基于现行法律法规与税收政策的通用规则估算，仅供参考，不构成法律或税务意见；各地执行口径存在差异，重大决策请咨询专业人士。<br>
+    <a href="javascript:runSelfTest()">🧪 计算器自检</a> ·
+    <a href="https://github.com/HadesWing/WorkBuddy" target="_blank" rel="noopener">📦 开源仓库</a> ·
+    <a href="https://github.com/HadesWing/WorkBuddy/issues/new" target="_blank" rel="noopener">💬 反馈与建议</a><br>
     🧭 打工人决策台 · 用 WorkBuddy 制作 · 1024 程序员节
   </footer>
+</div>
+
+<div id="stOv" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99;display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto;backdrop-filter:blur(2px)">
+  <div class="card" id="stBox" style="max-width:580px;width:100%;margin:0"></div>
 </div>
 
 <script>
@@ -813,6 +820,43 @@ function autoSaveTa(key,id,hintId){
 }
 autoSaveTa(K_RES,'jRes','jResHint');
 autoSaveTa(K_JD,'jJd',null);
+
+/* ═══════════ 页面内自检：与 tests/calc.test.js 同一口径 ═══════════ */
+function runSelfTest(){
+  var rows=[],pass=0,fail=0;
+  function T(name,got,exp){
+    var ok=(typeof got==='number'&&typeof exp==='number')?Math.abs(got-exp)<1e-6:got===exp;
+    ok?pass++:fail++;
+    rows.push('<tr><td style="text-align:left">'+(ok?'✅':'❌')+' '+name+'</td>'
+      +'<td style="text-align:left;color:'+(ok?'var(--ink3)':'#E74C3C')+'">'+(ok?'通过':'期望 '+exp+'，实际 '+got)+'</td></tr>');
+  }
+  T('工龄：2020-03-10 → 2026-09-20 = 78 个月',compMonths('2020-03-10','2026-09-20'),78);
+  T('工龄：差 1 天不满 6 年 = 71 个月',compMonths('2020-03-10','2026-03-09'),71);
+  T('补偿 N：5 个月 → 0.5',nOfM(5),0.5);
+  T('补偿 N：6 个月 → 1',nOfM(6),1);
+  T('补偿 N：78 个月 → 7',nOfM(78),7);
+  T('年终奖 36000 税额 = 1080',bonusTaxInfo(36000).tax,1080);
+  T('年终奖 96000 税额 = 9390',bonusTaxInfo(96000).tax,9390);
+  T('年终奖 144000 税额 = 14190',bonusTaxInfo(144000).tax,14190);
+  T('无效区间：36000 到手 > 36001 到手',
+    (36000-bonusTaxInfo(36000).tax)>(36001-bonusTaxInfo(36001).tax),true);
+  T('综合所得年表：96000 → 7080',taxOf(96000),7080);
+  var o=offerCalc({salary:20000,months:14,bonus:20000,fund:24,equity:0,overtime:0,commute:45});
+  T('Offer：20k×14 + 年终 2 万 + 公积金 24% = 357600',o.total,357600);
+  T('Offer：时薪 = 156.25 元/小时',Math.round(o.hourly*100)/100,156.25);
+  T('复盘分类：Redis → 数据库与缓存',autoCat('Redis 持久化 RDB 和 AOF 的取舍'),'数据库与缓存');
+  T('复盘分类：手撕反转链表 → 算法手撕',autoCat('手撕：反转链表'),'算法手撕');
+  T('速学卡片不少于 30 张',Object.keys(KB).length>=30,true);
+  var all=pass+fail;
+  document.getElementById('stBox').innerHTML=
+    '<div class="ohd"><h2>'+(fail===0?'🧪 计算器自检 · 全部通过':'🧪 计算器自检 · 有 '+fail+' 项失败')+'</h2>'
+    +'<button class="btn btn-sm btn-ghost" onclick="closeSelfTest()">关闭</button></div>'
+    +'<div class="desc">'+pass+' 通过 / '+fail+' 失败（共 '+all+' 项）。断言直接调用页面<b>正在运行的同一份计算函数</b>，不是另写的示例数据。</div>'
+    +'<table>'+rows.join('')+'</table>'
+    +'<div class="tipbox" style="margin-top:12px">完整套件在仓库 <code>tests/calc.test.js</code>（66 项断言），<code>node tests/calc.test.js</code> 可复现。发现算错的地方欢迎提 Issue。</div>';
+  document.getElementById('stOv').style.display='flex';
+}
+function closeSelfTest(){document.getElementById('stOv').style.display='none';}
 </script>
 </body>
 </html>
