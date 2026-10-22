@@ -1,0 +1,53 @@
+name: 反馈
+description: 计算结果不对、体验问题、或想加个功能 —— 都可以提在这里
+title: "[反馈] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。如果是**算错**，请务必填上你的输入参数，我可以用它做回归测试用例。
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 类型
+      options:
+        - 计算算错了
+        - 用法/说明看不懂
+        - 界面或移动端显示问题
+        - 想要新功能
+        - 其他
+    validations:
+      required: true
+  - type: dropdown
+    id: module
+    attributes:
+      label: 涉及模块
+      options:
+        - Offer 对比器
+        - JD 匹配分析
+        - 离职补偿计算器
+        - 年终奖个税优化
+        - 面试复盘库
+        - 离职小抄
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: input
+    attributes:
+      label: 你的输入参数（算错时必填）
+      description: 例如：入职 2020-03-10、离职 2026-09-20、月均应发 25000、情形 N+1、社平 12000
+      placeholder: 请尽量给全，方便复现
+  - type: textarea
+    id: expect
+    attributes:
+      label: 你期望的结果 / 依据
+      description: 如果引用了法条、政策文件或官方口径，请把出处一并写上
+  - type: textarea
+    id: actual
+    attributes:
+      label: 页面实际显示
+      description: 可以贴文字或截图
+    validations:
+      required: true
