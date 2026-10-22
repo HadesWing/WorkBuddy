@@ -608,11 +608,13 @@ function nOfM(m){
   var y=Math.floor(m/12),r=m%12;
   return y+(r>=6?1:(r>0?0.5:0));
 }
-/* 全年一次性奖金单独计税：按奖金÷12 定税率，按全额计税 */
+/* 全年一次性奖金单独计税：按奖金÷12 查「月度税率表」，再按全额计税 */
+var MONTH_BRK=[[3000,.03,0],[12000,.10,210],[25000,.20,1410],
+  [35000,.25,2660],[55000,.30,4410],[80000,.35,7160],[Infinity,.45,15160]];
 function bonusTaxInfo(bonus){
   var mA=bonus/12;
-  for(var i=0;i<BRK.length;i++){
-    if(mA<=BRK[i][0])return{tax:bonus*BRK[i][1]-BRK[i][2],rate:BRK[i][1],ded:BRK[i][2]};
+  for(var i=0;i<MONTH_BRK.length;i++){
+    if(mA<=MONTH_BRK[i][0])return{tax:bonus*MONTH_BRK[i][1]-MONTH_BRK[i][2],rate:MONTH_BRK[i][1],ded:MONTH_BRK[i][2]};
   }
   return{tax:0,rate:0,ded:0};
 }
@@ -706,7 +708,7 @@ function calcBonus(){
   var hit=null;
   for(var j=0;j<traps.length;j++){ if(bonus>traps[j][0]&&bonus<=traps[j][1]){hit=traps[j];break;} }
   if(hit){
-    var taxT=hit[0]*rateA-dedA;
+    var taxT=bonusTaxInfo(hit[0]).tax;
     html+='<div class="note"><b>⚠️ 你正处在「无效区间」！</b><br>'
       +'年终奖 '+fmt(hit[0])+'—'+fmt(hit[1])+' 元之间的税后收入，反而低于刚好 '+fmt(hit[0])+' 元时的税后收入'
       +'（多发一元，多缴一档税）。建议与 HR 沟通将年终奖定为 <b>'+fmt(hit[0])+' 元</b>'
@@ -728,7 +730,7 @@ function autoCat(q){
     [/(项目|你负责|难点|挑战|方案选型|优化了|重构|线上事故)/i,'项目深挖'],
     [/(算法|leetcode|手撕|动态规划|链表|二叉树|时间复杂度|反转|排序)/i,'算法手撕'],
     [/(场景|开放|如果|假设|怎么办|排查|线上|故障)/i,'场景与开放题'],
-    [/(离职|薪资|期望|加班|优缺点|职业规划|为什么|自我介绍|团队|管理)/i,'HR 与软素质']];
+    [/(离职|薪资|期望|加班|优缺点|优点|缺点|最大的|职业规划|为什么|自我介绍|团队|管理)/i,'HR 与软素质']];
   for(var i=0;i<r.length;i++){if(r[i][0].test(q))return r[i][1];}
   return '其他';
 }
