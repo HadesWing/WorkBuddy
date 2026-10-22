@@ -82,7 +82,7 @@ ok('标签 target 都能找到对应面板', tabTargets.every((t) => panes.inclu
   tabTargets.filter((t) => !panes.includes(t)).join(', '));
 ok('没有孤立面板（面板都有标签入口）', panes.every((p) => tabTargets.includes(p)),
   panes.filter((p) => !tabTargets.includes(p)).join(', '));
-ok('标签 + 面板数量为 6（六大模块）', tabTargets.length === 6, '当前 ' + tabTargets.length);
+ok('标签 + 面板数量为 7（七大模块）', tabTargets.length === 7, '当前 ' + tabTargets.length);
 
 /* ---------- 5. 每个面板内至少有一个可执行动作 ---------- */
 panes.forEach((p) => {
@@ -105,6 +105,8 @@ const features = [
   ['离职补偿', 'calcComp'],
   ['年终奖个税', 'calcBonus'],
   ['JD 匹配', 'calcJD'],
+  ['简历体检', 'auditResume'],
+  ['简历/JD 跨页同步', 'reloadSavedViews'],
   ['复盘导出', 'exportInterviews']
 ];
 features.forEach(([label, fn]) => {

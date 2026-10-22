@@ -39,7 +39,7 @@ let api;
 try {
   const factory = new Function(
     'document', 'window', 'navigator', 'localStorage', 'alert', 'confirm', 'Blob', 'URL', 'setTimeout', 'clearTimeout',
-    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS,posNum,kbLookup,kbCard,kbGeneric,ALIAS,KB_DEEP,KB_PATCH};'
+    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS,posNum,kbLookup,kbCard,kbGeneric,ALIAS,KB_DEEP,KB_PATCH,resumeAudit,resumeSkeleton,rRewrite,rHasMetric,STRONG_V};'
   );
   api = factory(documentStub, windowStub, {}, { getItem: () => null, setItem: noop, removeItem: noop },
     noop, () => false, function () {}, { createObjectURL: () => 'blob:', revokeObjectURL: noop }, () => 0, noop);
@@ -227,6 +227,64 @@ eq('posNum：空串归 0', api.posNum(''), 0);
 eq('posNum：Infinity 归 0', api.posNum(Infinity), 0);
 eq('posNum：正常值原样返回', api.posNum('12.5'), 12.5);
 eq('posNum：数字字符串返回数值', api.posNum(3000), 3000);
+
+
+/* ---------- 12. 简历体检 ---------- */
+const weakResume = '负责用户模块的开发\n参与需求评审\n了解 Redis 缓存';
+const strongResume = [
+  '教育背景', 'XX 大学 计算机科学与技术 本科 2015-2019',
+  '技能清单', '熟练 C++ / Linux / epoll / 多线程 / TCP / MySQL / Redis / Docker',
+  '项目经历',
+  '- 主导接入层重构，用 epoll ET + 非阻塞 IO 替换多线程模型，单机长连接从 5 千提升到 3 万，CPU 从 80% 降到 12%',
+  '- 设计驱动层环形缓冲，采样抖动从 15ms 降到 2ms，30 天长稳测试零重启',
+  '- 优化 MySQL 联合索引，订单列表 P99 从 1.8s 降到 90ms'
+].join('\n');
+
+ok('量化判断：带年份的任职时间不算成果', api.rHasMetric('2019-2021 在 XX 公司任职') === false);
+ok('量化判断：带数字的结果算成果', api.rHasMetric('P99 从 800ms 降到 90ms') === true);
+ok('量化判断：纯职责描述不算成果', api.rHasMetric('负责用户模块开发') === false);
+ok('量化判断：空行不崩', api.rHasMetric('') === false);
+
+const aw = api.resumeAudit('', weakResume), as = api.resumeAudit('', strongResume);
+ok('简历体检：空简历不崩且分数在 0-100', (() => {
+  const r = api.resumeAudit('', ''); return r.score >= 0 && r.score <= 100;
+})());
+ok('简历体检：强简历分数高于弱简历 20 分以上', as.score - aw.score >= 20, aw.score + ' vs ' + as.score);
+ok('简历体检：弱简历命中「量化结果」高优先级问题',
+  aw.issues.some(i => i.lv === 3 && i.t.indexOf('量化') >= 0));
+ok('简历体检：弱简历命中「强动词」问题', aw.issues.some(i => i.t.indexOf('强动词') >= 0));
+ok('简历体检：强简历不再报量化问题', !as.issues.some(i => i.t.indexOf('量化结果太少') >= 0));
+ok('简历体检：识别弱动词并给出替换建议', aw.weak.some(w => w.w === '负责' && w.fix.indexOf('主导') >= 0));
+ok('简历体检：结构缺失会点名具体段落', aw.issues.some(i => i.t.indexOf('缺少常见段落') >= 0));
+ok('简历体检：填了 JD 才评估关键词维度',
+  aw.dims.find(d => d.n === '关键词匹配').note === '未填 JD');
+ok('简历体检：有 JD 时产出植入清单', (() => {
+  const r = api.resumeAudit(api.SAMPLE_JD, weakResume);
+  return r.kwPlan.length > 0 && r.kwPlan[0].tpl.indexOf('【项目名】') >= 0;
+})());
+ok('简历体检：植入清单按 JD 频次降序', (() => {
+  const r = api.resumeAudit(api.SAMPLE_JD, weakResume);
+  return r.kwPlan.every((o, i) => i === 0 || r.kwPlan[i - 1].n >= o.n);
+})());
+ok('简历体检：每个维度得分不超过满分', aw.dims.every(d => d.got <= d.full && d.got >= 0));
+ok('简历体检：问题按严重度降序', aw.issues.every((it, i) => i === 0 || aw.issues[i - 1].lv >= it.lv));
+
+ok('逐句改写：弱动词被替换为强动词', (() => {
+  const r = api.rRewrite('负责用户模块开发');
+  return r.changed.indexOf('负责') >= 0 && r.after.indexOf('主导') >= 0;
+})());
+ok('逐句改写：原文没有数字时补量化提示', api.rRewrite('负责用户模块开发').after.indexOf('量化结果') >= 0);
+ok('逐句改写：已有数字时不追加提示', api.rRewrite('负责优化接口，P99 从 800ms 降到 90ms').after.indexOf('【补') < 0);
+ok('逐句改写：原文保持不变（可对照）', api.rRewrite('参与需求评审').before === '参与需求评审');
+
+const sk = api.resumeSkeleton(as);
+ok('简历骨架：包含全部关键段落',
+  ['个人优势', '技能清单', '项目 / 工作经历', '教育背景', '自查'].every(k => sk.indexOf(k) >= 0));
+ok('简历骨架：留了可填空的占位符', sk.indexOf('【') >= 0 && sk.indexOf('】') >= 0);
+ok('简历骨架：缺失关键词会被写进「正在补」', (() => {
+  const r = api.resumeAudit(api.SAMPLE_JD, weakResume);
+  return api.resumeSkeleton(r).indexOf('正在补') >= 0;
+})());
 
 /* ---------- 输出 ---------- */
 const total = pass + fails.length;

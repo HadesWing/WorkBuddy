@@ -164,6 +164,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
     <div class="tags">
       <span class="tag">⚖️ Offer 多维对比</span>
       <span class="tag">🎯 JD 匹配分析</span>
+      <span class="tag">✍️ 简历优化体检</span>
       <span class="tag">💰 离职补偿 N / N+1 / 2N</span>
       <span class="tag">🧾 年终奖个税优化</span>
       <span class="tag">📝 面试复盘库</span>
@@ -176,6 +177,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
   <div class="tabs">
     <button class="tab on" data-t="p1"><span class="t-ico">⚖️</span>Offer 对比</button>
     <button class="tab" data-t="p5"><span class="t-ico">🎯</span>JD 匹配分析</button>
+    <button class="tab" data-t="p7"><span class="t-ico">✍️</span>简历优化</button>
     <button class="tab" data-t="p2"><span class="t-ico">💰</span>离职补偿</button>
     <button class="tab" data-t="p3"><span class="t-ico">🧾</span>年终奖个税</button>
     <button class="tab" data-t="p6"><span class="t-ico">📝</span>面试复盘库</button>
@@ -183,7 +185,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
   </div>
 
   <div class="demo" id="demoBar">
-    <div class="demo-txt" id="demoTxt">👀 <b>第一次来？</b>不用自己填 —— 载入一组示例，六个模块立刻跑出结果，30 秒看完。</div>
+    <div class="demo-txt" id="demoTxt">👀 <b>第一次来？</b>不用自己填 —— 载入一组示例，七个模块立刻跑出结果，30 秒看完。</div>
     <div class="demo-act" id="demoAct">
       <button class="btn btn-sm btn-main" onclick="loadSample()">载入示例数据</button>
       <button class="btn btn-sm btn-ghost" onclick="closeDemo()">自己填</button>
@@ -256,6 +258,24 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
         <textarea id="jJd" rows="7" placeholder="粘贴完整 JD 文本…"></textarea></div>
       <div style="margin-top:12px"><button class="btn btn-main" onclick="calcJD()">🎯 分析差距 · 生成速学清单</button></div>
       <div class="res" id="jdRes"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ P7 简历优化 ═══════════ -->
+  <div class="pane" id="p7">
+    <div class="card">
+      <h2>✍️ 简历优化器</h2>
+      <div class="desc">把简历和 JD 放进来，本机做一次「招聘方视角」体检：<b>量化程度、强动词、关键词覆盖、结构完整、表达问题</b>五个维度打分，逐条给出「原句 → 怎么改」，再把 JD 缺失词生成可填空的植入句式。全部在本机算，简历不上传。</div>
+      <div class="fld"><label class="f">简历正文 *</label>
+        <textarea id="rvRes" rows="9" placeholder="粘贴简历（与 JD 匹配页共用同一份，改一次两边都生效）…"></textarea>
+        <div class="hint" id="rvHint">💾 与「JD 匹配分析」共用同一份简历，自动保存在本机。</div></div>
+      <div class="fld"><label class="f">目标岗位 JD（可选，填了才能算关键词覆盖）</label>
+        <textarea id="rvJd" rows="6" placeholder="粘贴目标岗位 JD…"></textarea></div>
+      <div style="margin-top:12px">
+        <button class="btn btn-main" onclick="auditResume()">🔍 体检并生成改写建议</button>
+        <button class="btn btn-ghost" style="margin-left:8px" onclick="gotoTab('p5')">去 JD 匹配页</button>
+      </div>
+      <div class="res" id="rvOut"></div>
     </div>
   </div>
 
@@ -370,6 +390,7 @@ document.querySelectorAll('.tab').forEach(function(t){
     t.classList.add('on');
     t.setAttribute('aria-selected','true');
     document.getElementById(t.dataset.t).classList.add('on');
+    try{reloadSavedViews()}catch(e){}
   };
 });
 document.querySelectorAll('.pane').forEach(function(p){
@@ -377,7 +398,7 @@ document.querySelectorAll('.pane').forEach(function(p){
   p.setAttribute('tabindex','0');
 });
 
-/* ═══════════ 示例数据：让新用户/评委一次看完六个模块 ═══════════ */
+/* ═══════════ 示例数据：让新用户/评委一次看完七个模块 ═══════════ */
 var SAMPLE_OFFERS=[
   {name:'A 公司 · 后端开发（大小周）',sal:'24000',mon:'15',bon:'30000',
    fund:'24',eq:'100000',ot:'12',cm:'45'},
@@ -441,9 +462,11 @@ function loadSample(){
   document.getElementById('bSb').value='45000';
   document.getElementById('bKk').value='60000';
 
-  /* 简历 / JD */
+  /* 简历 / JD（JD 匹配页与简历优化页共用同一份） */
   document.getElementById('jRes').value=SAMPLE_RESUME;
   document.getElementById('jJd').value=SAMPLE_JD;
+  document.getElementById('rvRes').value=SAMPLE_RESUME;
+  document.getElementById('rvJd').value=SAMPLE_JD;
   try{
     localStorage.setItem(K_RES,SAMPLE_RESUME);
     localStorage.setItem(K_JD,SAMPLE_JD);
@@ -456,12 +479,12 @@ function loadSample(){
     localStorage.setItem(K_INT,JSON.stringify(arr));
   }catch(e){}
 
-  /* 六个模块全部跑一遍，切回第一个标签 */
-  cmpOffers(); calcComp(); calcBonus(); calcJD(); renderInts();
+  /* 七个模块全部跑一遍，切回第一个标签 */
+  cmpOffers(); calcComp(); calcBonus(); calcJD(); auditResume(); renderInts();
   gotoTab('p1');
 
   document.getElementById('demoTxt').innerHTML=
-    '✅ <b>示例已就绪</b>：2 个 Offer、1 份简历与 JD、2 条面试复盘都已填好，<b>六个模块的结果也已经算好</b>，点上面的标签逐个看。';
+    '✅ <b>示例已就绪</b>：2 个 Offer、1 份简历与 JD、2 条面试复盘都已填好，<b>七个模块的结果也已经算好</b>。简历体检会给示例简历打低分——那是故意留的典型弱写法（「负责…」+ 没有数字 + 没有段落），正好用来看它能挑出什么问题。';
   document.getElementById('demoAct').innerHTML=
     '<button class="btn btn-sm btn-ghost" onclick="clearSample()">清空示例</button>';
 }
@@ -620,8 +643,9 @@ function calcJD(){
   hl+='<div class="tipbox">💡 用法：把缺失项按条数从上到下补——JD 里出现 2 次以上的词，大概率是面试官的必问题。</div>';
   document.getElementById('jdRes').innerHTML=hl;
 }
-function copyText(btn,txt){
-  var done=function(){btn.textContent='✓ 已复制';setTimeout(function(){btn.textContent='复制提纲'},1500);};
+function copyText(btn,txt,label){
+  var back=label||'复制提纲';
+  var done=function(){btn.textContent='✓ 已复制';setTimeout(function(){btn.textContent=back},1500);};
   try{navigator.clipboard.writeText(txt).then(done,function(){
     var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
     document.execCommand('copy');ta.remove();done();});
@@ -1854,6 +1878,253 @@ function autoSaveTa(key,id,hintId){
 }
 autoSaveTa(K_RES,'jRes','jResHint');
 autoSaveTa(K_JD,'jJd',null);
+
+/* ═══════════ P7 简历优化（纯本地规则引擎，不依赖模型） ═══════════ */
+var STRONG_V=['主导','设计','实现','落地','重构','优化','搭建','推动','治理','沉淀','攻坚','迁移','上线','自动化','定位','压测','抽象','复用','降本','提效','交付','拆分','自研'];
+var WEAK_V={
+ '负责':'主导 / 设计 / 落地 —— 说清你负责的那一块，而不是「负责某个模块」',
+ '参与':'承担 / 独立完成 —— 「参与」会让面试官怀疑你的实际贡献度',
+ '协助':'推动 / 支撑 —— 改成你具体做了哪个动作、产出了什么',
+ '帮助':'使 / 让 —— 弱动词，换成动作 + 结果',
+ '跟进':'推进 / 闭环 —— 写出推进到什么结果',
+ '配合':'协同 / 对接 —— 写清协作对象与你的产出',
+ '做一些':'交付 / 完成 —— 「一些」会显得没有重点',
+ '完成了':'交付 / 上线 —— 补上量化结果',
+ '使用':'基于 —— 顺带说明为什么选它，体现技术判断',
+ '了解':'掌握 / 熟练 —— 按真实水平写，虚标会在追问时露底'
+};
+var SECTION_DEF=[['教育','教育 / 学历'],['技能','技能 / 技术栈'],['工作经历','工作 / 实习经历'],['项目','项目经历'],['自我评价','自我评价 / 优势']];
+var ORAL_RE=/(本人|我觉得|我认为|大概|可能吧|之类的|等等|比较擅长|有一定了解|略懂|熟练掌握各种)/g;
+
+function rTrim(s){return (s||'').replace(/^[\s\u3000]+|[\s\u3000]+$/g,'')}
+function rLines(t){
+  return (t||'').split(/\r?\n/).map(rTrim).filter(function(s){return s.length>=8});
+}
+function rIsBullet(l){return /^([-•·*▪▸►]|\d+[.、)）])/.test(l)}
+/* 量化判断：先剔除「2019-2021」这类年份区间，避免把在职时间当成成果数字 */
+function rHasMetric(l){
+  var t=(l||'').replace(/(19|20)\d{2}\s*([-~至—]\s*((19|20)\d{2}|至今|现在))?/g,'');
+  return /\d/.test(t);
+}
+function rStrongCount(l){
+  var n=0; STRONG_V.forEach(function(v){ if((l||'').indexOf(v)>=0)n++ }); return n;
+}
+/* 把弱动词替换成建议动词，生成「改写骨架」 */
+function rRewrite(l){
+  var out=l, changed=[];
+  Object.keys(WEAK_V).forEach(function(w){
+    if(out.indexOf(w)>=0){
+      var rep=WEAK_V[w].split(' / ')[0];
+      out=out.split(w).join(rep); changed.push(w);
+    }
+  });
+  if(changed.length && !/[0-9]/.test(out.replace(/(19|20)\d{2}/g,'')))out=rTrim(out.replace(/[。.;；]$/,''))+'，【补：量化结果，如 P99 从 800ms 降到 90ms / 覆盖 30 万用户 / 成本降 40%】';
+  return {before:l,after:out,changed:changed};
+}
+/* 纯函数：给简历打分并产出建议。无 DOM 依赖，可被测试直接调用 */
+function resumeAudit(jd,res){
+  var lines=rLines(res);
+  var body=lines.filter(function(l){return l.length>=14 && !/[:：]$/.test(l)});
+  var total=body.length||1;
+  var metric=body.filter(rHasMetric).length;
+  var bullets=lines.filter(rIsBullet).length;
+  var strong=body.filter(function(l){return rStrongCount(l)>0}).length;
+  var oral=(String(res||'').match(ORAL_RE)||[]).length;
+  var longLines=body.filter(function(l){return l.length>90}).length;
+
+  var hasJd=!!(jd&&rTrim(jd).length>20);
+  var cov=0,covN=0,covD=0,miss=[];
+  if(hasJd){
+    var need=kwCount(jd), keys=Object.keys(need), rl=String(res).toLowerCase();
+    var hit=keys.filter(function(k){return rl.indexOf(k)>=0});
+    covD=keys.length; covN=hit.length; cov=keys.length?hit.length/keys.length:0;
+    miss=keys.filter(function(k){return rl.indexOf(k)<0})
+      .map(function(k){return{k:k,n:need[k]}}).sort(function(a,b){return b.n-a.n}).slice(0,10);
+  }
+  var sectHit=0, sectMiss=[];
+  SECTION_DEF.forEach(function(s){ if(String(res||'').indexOf(s[0])>=0)sectHit++; else sectMiss.push(s[1]) });
+
+  var st={quant:metric/total,strongR:strong/total,cov:cov,oral:oral,long:longLines,
+    bullets:bullets,sect:sectHit,total:total,metric:metric,strong:strong,
+    covN:covN,covD:covD,hasJd:hasJd,lines:lines.length};
+  var q=Math.round(Math.min(1,st.quant/0.6)*30);
+  var k=Math.round(Math.min(1,st.cov/0.7)*25);
+  var v=Math.round(Math.min(1,st.strongR/0.5)*15);
+  var sc=Math.round(st.sect/5*20);
+  var e=Math.max(0,10-st.oral*2-st.long*2-(st.bullets?0:3));
+  var full=hasJd?100:75;
+  var score=Math.round((q+k+v+sc+e)/full*100);
+
+  var issues=[];
+  if(st.quant<0.4)issues.push({lv:3,t:'量化结果太少（'+metric+'/'+total+' 条含数字）',
+    d:'招聘方初筛平均只看 10 秒，最先找的是「做到什么程度」。只有动作没有结果，会被归类为「执行者」而不是「解决问题的人」。',
+    f:'每条经历补一个数字：性能（ms/QPS/耗时）、规模（用户量/数据量/并发）、结果（提升或降低的百分比）。没有精确数据就用区间或量级，不要编——面试会被追问口径。'});
+  if(hasJd&&cov<0.55)issues.push({lv:3,t:'JD 关键词覆盖偏低（'+covN+'/'+covD+'，'+Math.round(cov*100)+'%）',
+    d:'大多数公司用关键词做初筛。你的能力可能匹配，但简历里没出现那个词，就会被系统或 HR 直接跳过。',
+    f:'把下方「关键词植入」里的句式挑 3—5 个改成你自己的真实项目；不会的技术不要硬写，写「正在补」也比编造安全。'});
+  if(st.strongR<0.4)issues.push({lv:2,t:'强动词偏少（'+strong+'/'+total+' 条）',
+    d:'「负责/参与/协助」描述的是岗位职责，不是你的贡献。同样一段经历，动词决定了面试官对你的定位。',
+    f:'把「负责」换成「主导/设计/落地」，把「参与」换成「承担/独立完成」，并补上你独立决策的那部分。'});
+  if(sectMiss.length)issues.push({lv:2,t:'缺少常见段落：'+sectMiss.join('、'),
+    d:'结构缺失会让阅读成本变高。技术简历不需要花哨排版，但需要让人 10 秒内找到「技能、项目、时间线」。',
+    f:'按「个人信息 → 个人优势 → 技能 → 项目/工作经历（倒序）→ 教育」补齐；没有工作经历就把项目写厚。'});
+  if(!bullets&&lines.length>4)issues.push({lv:2,t:'通篇没有分点，是一大段文字',
+    d:'段落式简历在筛选阶段几乎不会被读完，关键信息会被埋掉。',
+    f:'每条经历拆成 1—3 个分点，每点只讲一件事：动作 + 方法 + 结果。'});
+  if(st.oral)issues.push({lv:1,t:'口语化表达 '+st.oral+' 处（本人/我觉得/大概/之类的…）',
+    d:'简历是书面材料，口语词会显得不专业，也占字数。',
+    f:'删掉主语与语气词，直接写动作与结果。'});
+  if(st.long)issues.push({lv:1,t:st.long+' 行超过 90 字',
+    d:'过长的句子读完记不住重点，也说明这段没有提炼。',
+    f:'超过两行的描述拆成分点；一句话说不清的部分，说明你自己还没想清这段的亮点。'});
+  if(!hasJd)issues.push({lv:1,t:'还没有填目标 JD，关键词维度未评估',
+    d:'简历应该是「为某个岗位定制」的，同一份简历投所有岗位，命中率一定低。',
+    f:'把目标岗位 JD 贴到上方，再跑一次——关键词覆盖与植入句式会一起出来。'});
+  issues.sort(function(a,b){return b.lv-a.lv});
+
+  var weak=[];
+  Object.keys(WEAK_V).forEach(function(w){
+    var c=String(res||'').split(w).length-1;
+    if(c>0)weak.push({w:w,c:c,fix:WEAK_V[w]});
+  });
+  weak.sort(function(a,b){return b.c-a.c});
+
+  var rewrites=[];
+  body.forEach(function(l){
+    if(rewrites.length>=4)return;
+    if(Object.keys(WEAK_V).some(function(w){return l.indexOf(w)>=0}))rewrites.push(rRewrite(l));
+  });
+
+  var kwPlan=miss.map(function(o){
+    var h=kbLookup(o.k);
+    return {k:o.k,n:o.n,use:(h&&h.c.use)||'',
+      tpl:'在【项目名】中，用 '+o.k+' 解决【具体问题】，使【指标】从【A】提升到【B】。'};
+  });
+
+  var grade=score>=85?'有竞争力':score>=70?'可投，但仍能明显提升':score>=55?'建议按清单改一轮再投':'需要重写';
+  var summary=score>=85?'结构和表达都到位了，接下来重点是按岗位做微调、准备项目深挖。'
+    :score>=70?'基础是好的，主要短板在 '+(st.quant<0.4?'量化结果':'关键词匹配')+'，改完能上一个档。'
+    :score>=55?'能看出做了什么，但缺少「结果」与「关键词」，按高优先级问题改一轮。'
+    :'目前更像职责描述而不是成果清单，建议按下方骨架重写。';
+
+  return {score:score,grade:grade,summary:summary,hasJd:hasJd,
+    dims:[{n:'量化结果',got:q,full:30,note:metric+'/'+total+' 条含数字'},
+          {n:'关键词匹配',got:k,full:25,note:hasJd?covN+'/'+covD+' 命中':'未填 JD'},
+          {n:'强动词',got:v,full:15,note:strong+'/'+total+' 条'},
+          {n:'结构完整',got:sc,full:20,note:sectHit+'/5 个段落'},
+          {n:'表达规范',got:e,full:10,note:st.oral+' 处口语 · '+st.long+' 行过长'}],
+    st:st,issues:issues,weak:weak,rewrites:rewrites,kwPlan:kwPlan};
+}
+
+/* 优化后的简历骨架：把审计结果直接填进模板，用户只需替换【】 */
+function resumeSkeleton(a){
+  var md='# 【姓名】 · 【目标岗位】\n【城市】 | 【手机】 | 【邮箱】 | 【GitHub / 博客】\n\n';
+  md+='## 个人优势（招聘方 10 秒内会看的三行）\n';
+  md+='- 【X】年【方向】经验，主导过【最能对标该岗位的项目】，【一句话量化结果】\n';
+  md+='- 技术栈按 JD 顺序写：'+(a.kwPlan&&a.kwPlan.length?'【命中项 + 要补的 1-2 项】':'【按岗位顺序排列，别按你熟悉的顺序】')+'\n';
+  md+='- 【一个与岗位强相关的差异化优势：行业经验 / 开源 / 性能优化案例】\n\n';
+  md+='## 技能清单\n';
+  md+='- 熟练：【从 JD 命中项里挑真实会用的】\n';
+  if(a.kwPlan&&a.kwPlan.length){
+    md+='- 正在补：'+a.kwPlan.slice(0,3).map(function(o){return o.k}).join(' / ')+'（面试可讲学习计划，别写成已掌握）\n';
+  }
+  md+='\n## 项目 / 工作经历（倒序，每条：强动词 + 技术 + 做法 + 量化结果）\n';
+  md+='### 【项目名】 · 【你的角色】 · 【起止时间】\n';
+  md+='- 【强动词】了【什么模块】，用【技术方案】解决【什么具体问题】，【指标】从【A】到【B】\n';
+  md+='- 【踩过的坑 + 怎么定位 + 最终效果】（面试官最爱追问这段）\n';
+  md+='- 【协作与产出：带了几个人 / 沉淀了什么文档或工具】\n\n';
+  md+='## 教育背景\n【学校】 · 【专业】 · 【学历】 · 【起止时间】\n\n';
+  md+='## 提交前自查（投递时删掉本节）\n';
+  md+='- [ ] 每条经历都有数字？（没有就补量级）\n';
+  md+='- [ ] 强动词开头？（主导/设计/落地/优化，不用「负责/参与」）\n';
+  md+='- [ ] JD 里出现 3 次以上的词都覆盖了？\n';
+  md+='- [ ] 一页以内（应届）/ 两页以内（5 年以上）？\n';
+  md+='- [ ] 没有任何一句是「岗位职责」的复述？\n';
+  return md;
+}
+
+/* 渲染体检结果 */
+function auditResume(){
+  var res=v('rvRes'), jd=v('rvJd');
+  if(!res){alert('请先粘贴简历正文');return;}
+  if(res.length<80){alert('简历内容只有 '+res.length+' 字，太短了，请粘贴完整简历');return;}
+  var a=resumeAudit(jd,res), st=a.st;
+  var colors=['#E67E22','#12C87A','#3B82F6','#8B5CF6','#0EA5A0'];
+  var h='<div class="kpi"><div class="big">'+a.score+'<small> / 100 · '+a.grade+'</small></div>'
+    +'<div class="cap">'+a.summary+'</div></div>';
+  h+='<div style="margin-top:12px">';
+  a.dims.forEach(function(d,i){
+    var pct=d.full?Math.round(d.got/d.full*100):0;
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12.5px">'
+      +'<span style="width:78px;color:var(--ink3);flex:none">'+d.n+'</span>'
+      +'<span style="flex:1;height:8px;background:#E8EFEA;border-radius:99px;overflow:hidden">'
+      +'<i style="display:block;height:100%;width:'+pct+'%;background:'+colors[i%5]+';border-radius:99px"></i></span>'
+      +'<span style="width:96px;text-align:right;color:var(--ink2);flex:none">'+d.got+'/'+d.full+' · '+d.note+'</span></div>';
+  });
+  h+='</div>';
+
+  h+='<div style="margin-top:16px"><b style="font-size:13.5px">🚩 问题清单（按严重度排序）</b>';
+  a.issues.forEach(function(it){
+    var col=it.lv===3?'var(--warn)':it.lv===2?'#3B82F6':'var(--ink3)';
+    var lab=it.lv===3?'高':it.lv===2?'中':'低';
+    h+='<div style="margin-top:8px;border-left:3px solid '+col+';background:#FBFDFC;border-radius:0 10px 10px 0;padding:9px 11px">'
+      +'<b style="font-size:13px">'+lab+' · '+esc(it.t)+'</b>'
+      +'<div style="font-size:12.5px;color:var(--ink2);margin-top:3px">为什么：'+esc(it.d)+'</div>'
+      +'<div style="font-size:12.5px;color:var(--brand2);margin-top:3px">怎么改：'+esc(it.f)+'</div></div>';
+  });
+  h+='</div>';
+
+  if(a.rewrites.length){
+    h+='<div style="margin-top:16px"><b style="font-size:13.5px">✏️ 逐句改写示例（按真实情况选词，别虚标）</b>';
+    a.rewrites.forEach(function(r){
+      h+='<div style="margin-top:8px;font-size:12.5px;border:1px solid var(--line);border-radius:10px;padding:9px 11px">'
+        +'<div style="color:var(--ink3)">原句：'+esc(r.before)+'</div>'
+        +'<div style="margin-top:4px;color:var(--ink)">改写：'+esc(r.after)+'</div></div>';
+    });
+    h+='</div>';
+  }
+
+  if(a.weak.length){
+    h+='<div style="margin-top:14px"><b style="font-size:13.5px">🔁 弱动词替换表</b><div style="margin-top:6px;font-size:12.5px">'
+      +a.weak.map(function(w){return '<div style="margin-top:3px"><b>'+esc(w.w)+'</b> ×'+w.c+' → <span style="color:var(--ink2)">'+esc(w.fix)+'</span></div>'}).join('')
+      +'</div></div>';
+  }
+
+  if(a.kwPlan.length){
+    h+='<div style="margin-top:16px"><b style="font-size:13.5px">🎯 关键词植入清单（按 JD 频次排序，挑 3—5 个够用）</b>';
+    a.kwPlan.forEach(function(o){
+      h+='<div style="margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:9px 11px">'
+        +'<b style="font-size:13px">'+esc(o.k)+(o.n>1?' <span style="color:var(--ink3);font-weight:400">JD 出现 '+o.n+' 次</span>':'')+'</b>'
+        +'<div style="font-size:12.5px;color:var(--ink2);margin-top:3px">填空：'+esc(o.tpl)+'</div>'
+        +(o.use?'<div style="font-size:12px;color:var(--ink3);margin-top:3px">参考：'+esc(o.use)+'</div>':'')
+        +'</div>';
+    });
+    h+='</div>';
+  }
+
+  var sk=resumeSkeleton(a);
+  window.rvMd=a.summary+'\n\n【问题清单】\n'+a.issues.map(function(i){return '- ['+(i.lv===3?'高':i.lv===2?'中':'低')+'] '+i.t+'｜'+i.f}).join('\n')
+    +'\n\n【关键词植入】\n'+a.kwPlan.map(function(o){return '- '+o.k+'：'+o.tpl}).join('\n')
+    +'\n\n'+sk;
+  h+='<div style="margin-top:16px"><b style="font-size:13.5px">🧱 优化后的简历骨架（可复制后填空）</b>'
+    +'<pre style="white-space:pre-wrap;background:#F8FAF9;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:12px;margin-top:6px;font-family:inherit">'+esc(sk)+'</pre>'
+    +'<button class="btn btn-ghost btn-sm" onclick="copyText(this,rvMd,\'复制改写清单\')">复制改写清单</button></div>';
+  h+='<div class="tipbox">💡 简历是「为岗位定制」的：每投一个岗位，换 JD 跑一次，把命中率高的词改到靠前位置。改完再回来体检，分数会自己说话。</div>';
+  document.getElementById('rvOut').innerHTML=h;
+}
+
+/* 两个页面共用同一份简历/JD：切换标签时把最新内容同步过去 */
+function reloadSavedViews(){
+  var r='',j='';
+  try{r=localStorage.getItem(K_RES)||''}catch(e){}
+  try{j=localStorage.getItem(K_JD)||''}catch(e){}
+  [['jRes',r],['rvRes',r],['jJd',j],['rvJd',j]].forEach(function(p){
+    var e=document.getElementById(p[0]);
+    if(e&&document.activeElement!==e&&e.value!==p[1])e.value=p[1];
+  });
+}
+autoSaveTa(K_RES,'rvRes','rvHint');
+autoSaveTa(K_JD,'rvJd',null);
 
 /* ═══════════ 数据备份与恢复 ═══════════ */
 var BK_KEYS=[['wdc_offers_v1','Offer 对比'],['wdc_interviews_v1','面试复盘'],
