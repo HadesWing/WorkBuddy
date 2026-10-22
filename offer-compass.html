@@ -304,14 +304,20 @@ footer a{color:var(--brand2);text-decoration:none}
   <footer>
     计算结果基于现行法律法规与税收政策的通用规则估算，仅供参考，不构成法律或税务意见；各地执行口径存在差异，重大决策请咨询专业人士。<br>
     <a href="javascript:runSelfTest()">🧪 计算器自检</a> ·
+    <a href="javascript:openBackup()">💾 数据备份</a> ·
     <a href="https://github.com/HadesWing/WorkBuddy" target="_blank" rel="noopener">📦 开源仓库</a> ·
     <a href="https://github.com/HadesWing/WorkBuddy/issues/new" target="_blank" rel="noopener">💬 反馈与建议</a><br>
+    <span id="mkInstallWrap" style="display:none"><a href="javascript:installApp()">📱 安装到桌面 / 手机主屏</a><br></span>
     🧭 打工人决策台 · 用 WorkBuddy 制作 · 1024 程序员节
   </footer>
 </div>
 
 <div id="stOv" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99;display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto;backdrop-filter:blur(2px)">
   <div class="card" id="stBox" style="max-width:580px;width:100%;margin:0"></div>
+</div>
+
+<div id="bkOv" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99;display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto;backdrop-filter:blur(2px)">
+  <div class="card" id="bkBox" style="max-width:560px;width:100%;margin:0"></div>
 </div>
 
 <script>
@@ -820,6 +826,109 @@ function autoSaveTa(key,id,hintId){
 }
 autoSaveTa(K_RES,'jRes','jResHint');
 autoSaveTa(K_JD,'jJd',null);
+
+/* ═══════════ 数据备份与恢复 ═══════════ */
+var BK_KEYS=[['wdc_offers_v1','Offer 对比'],['wdc_interviews_v1','面试复盘'],
+             ['wdc_resume_v1','简历'],['wdc_jd_v1','最近一份 JD']];
+var BK_TAG='wdc-backup';
+function bkStats(){
+  var st={offers:0,ints:0,res:0,jd:0};
+  try{ st.offers=(JSON.parse(localStorage.getItem('wdc_offers_v1')||'[]')||[]).length }catch(e){}
+  try{ st.ints=(JSON.parse(localStorage.getItem('wdc_interviews_v1')||'[]')||[]).length }catch(e){}
+  try{ st.res=(localStorage.getItem('wdc_resume_v1')||'').length }catch(e){}
+  try{ st.jd=(localStorage.getItem('wdc_jd_v1')||'').length }catch(e){}
+  return st;
+}
+function openBackup(){
+  var st=bkStats();
+  document.getElementById('bkBox').innerHTML=
+    '<div class="ohd"><h2>💾 数据备份与恢复</h2>'
+    +'<button class="btn btn-sm btn-ghost" onclick="closeBackup()">关闭</button></div>'
+    +'<div class="desc">数据只存在这台设备的浏览器里——不上传、不同步。<b>换设备、清缓存、换浏览器都会丢</b>，重要数据请导出备份。</div>'
+    +'<table style="margin-top:10px">'
+    +'<tr><td>Offer 对比</td><td><b>'+st.offers+'</b> 条</td></tr>'
+    +'<tr><td>面试复盘</td><td><b>'+st.ints+'</b> 条</td></tr>'
+    +'<tr><td>简历</td><td>'+(st.res?'<b>已保存</b> · '+st.res+' 字':'未保存')+'</td></tr>'
+    +'<tr><td>最近 JD</td><td>'+(st.jd?'<b>已保存</b> · '+st.jd+' 字':'未保存')+'</td></tr>'
+    +'</table>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">'
+    +'<button class="btn btn-main" onclick="exportAll()">⬇️ 导出备份（.json）</button>'
+    +'<button class="btn btn-ghost" onclick="document.getElementById(\'bkFile\').click()">⬆️ 从备份恢复</button>'
+    +'<button class="btn btn-sm btn-del" onclick="clearAll()">清空全部数据</button>'
+    +'</div>'
+    +'<input type="file" id="bkFile" accept=".json,application/json" style="display:none" onchange="importFile(this)">'
+    +'<div class="tipbox" style="margin-top:12px">恢复会<b>覆盖</b>当前数据。备份是纯文本 JSON，可以自己打开核对，也能存进网盘。'
+    +'<br>「导出备份」在自检面板旁边的同一行入口也能进。</div>';
+  document.getElementById('bkOv').style.display='flex';
+}
+function closeBackup(){document.getElementById('bkOv').style.display='none';}
+
+function exportAll(){
+  var data={app:BK_TAG,version:1,exportedAt:new Date().toISOString(),data:{}};
+  BK_KEYS.forEach(function(k){
+    try{var s=localStorage.getItem(k[0]); if(s!==null&&s!=='')data.data[k[0]]=s;}catch(e){}
+  });
+  if(!Object.keys(data.data).length){alert('还没有可备份的数据。先用一下各个模块，数据会自动保存到本机。');return;}
+  var d=new Date();
+  function p2(n){return (n<10?'0':'')+n;}
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='打工人决策台-备份-'+d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'.json';
+  a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+}
+function importFile(inp){
+  var f=inp.files&&inp.files[0]; if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    var obj=null;
+    try{obj=JSON.parse(r.result)}catch(e){}
+    if(!obj||obj.app!==BK_TAG||!obj.data){
+      alert('这不是「打工人决策台」的备份文件，或文件已损坏。'); inp.value=''; return;
+    }
+    if(!confirm('将从备份恢复，当前数据会被覆盖（不可撤销）。继续？')){inp.value='';return;}
+    try{
+      Object.keys(obj.data).forEach(function(k){
+        if(obj.data[k]!==null&&obj.data[k]!==undefined)localStorage.setItem(k,obj.data[k]);
+      });
+    }catch(e){ alert('恢复失败：浏览器本地存储不可用'); inp.value=''; return; }
+    alert('已恢复，页面将刷新以加载备份数据。');
+    location.reload();
+  };
+  r.onerror=function(){alert('读取文件失败，请重试');inp.value='';};
+  r.readAsText(f,'utf-8');
+}
+function clearAll(){
+  if(!confirm('确定清空全部本地数据？此操作不可撤销，建议先「导出备份」。'))return;
+  if(!confirm('再确认一次：Offer、面试复盘、简历、JD 都会被删除。'))return;
+  BK_KEYS.forEach(function(k){ try{localStorage.removeItem(k[0])}catch(e){} });
+  location.reload();
+}
+
+/* ═══════════ 安装到桌面（PWA） ═══════════ */
+var deferredInstall=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault(); deferredInstall=e;
+  var w=document.getElementById('mkInstallWrap'); if(w)w.style.display='block';
+});
+function installApp(){
+  if(!deferredInstall){
+    alert('当前浏览器没有弹出安装入口。\n\n手动安装：\n· Chrome / Edge：地址栏右侧的「安装」图标\n· iOS Safari：底部「分享」→「添加到主屏幕」\n· Android Chrome：右上角菜单 →「安装应用」');
+    return;
+  }
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(function(c){
+    if(c&&c.outcome==='accepted'){
+      deferredInstall=null;
+      var w=document.getElementById('mkInstallWrap'); if(w)w.style.display='none';
+    }
+  });
+}
+window.addEventListener('appinstalled',function(){
+  deferredInstall=null;
+  var w=document.getElementById('mkInstallWrap'); if(w)w.style.display='none';
+});
 
 /* ═══════════ 页面内自检：与 tests/calc.test.js 同一口径 ═══════════ */
 function runSelfTest(){

@@ -33,14 +33,15 @@ const documentStub = {
   getElementById: () => elStub(), createElement: () => elStub(),
   addEventListener: noop, body: elStub(), execCommand: noop
 };
+const windowStub = { addEventListener: noop };
 
 let api;
 try {
   const factory = new Function(
     'document', 'window', 'navigator', 'localStorage', 'alert', 'confirm', 'Blob', 'URL', 'setTimeout', 'clearTimeout',
-    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB};'
+    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats};'
   );
-  api = factory(documentStub, {}, {}, { getItem: () => null, setItem: noop, removeItem: noop },
+  api = factory(documentStub, windowStub, {}, { getItem: () => null, setItem: noop, removeItem: noop },
     noop, () => false, function () {}, { createObjectURL: () => 'blob:', revokeObjectURL: noop }, () => 0, noop);
 } catch (e) {
   console.error('✗ 脚本在桩环境执行失败：' + e.message);
@@ -153,6 +154,14 @@ ok('知识库：每张卡片都有定义/要点/学习路径', Object.keys(api.K
 ok('知识库：别名 k8s 指向 kubernetes', api.KB.k8s === api.KB.kubernetes);
 ok('知识库：别名 llm 指向大模型', api.KB.llm === api.KB['大模型']);
 ok('关键词表：技术词库 ≥ 100 项', api.TECH.length >= 100);
+
+/* ---------- 9. 数据备份 ---------- */
+eq('备份：覆盖 4 个存储键', api.BK_KEYS.length, 4);
+eq('备份：标识可被校验', api.BK_TAG, 'wdc-backup');
+eq('备份：四个键不与业务键脱节', api.BK_KEYS.map(k => k[0]).sort(),
+  ['wdc_interviews_v1', 'wdc_jd_v1', 'wdc_offers_v1', 'wdc_resume_v1']);
+const emptyStats = api.bkStats();
+eq('备份：空存储下统计为 0 条', [emptyStats.offers, emptyStats.ints, emptyStats.res, emptyStats.jd], [0, 0, 0, 0]);
 
 /* ---------- 输出 ---------- */
 const total = pass + fails.length;
