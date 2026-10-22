@@ -2,7 +2,7 @@
 
 > WorkBuddy「1024 造物挑战」程序员节应用创作大赛参赛作品
 >
-> [![Tests](https://img.shields.io/badge/tests-66%20passed-success)](tests/calc.test.js) [![CI](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml/badge.svg)](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml) [![Dependencies](https://img.shields.io/badge/dependencies-0-blue)](package.json) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+> [![Tests](https://img.shields.io/badge/tests-70%20passed-success)](tests/calc.test.js) [![CI](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml/badge.svg)](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml) [![Dependencies](https://img.shields.io/badge/dependencies-0-blue)](package.json) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 跳槽这件事上的六个硬问题：**哪个 Offer 真的更值钱、这份 JD 我差在哪、被裁该拿多少、年终奖怎么发最省税、面试挂在哪、离职该注意什么**。一个页面全部算清。
 
@@ -67,6 +67,17 @@ python3 -m http.server 8080   # 打开 http://127.0.0.1:8080/offer-compass.html
 node tests/calc.test.js     # 或 npm test
 ```
 
+**方式四**：安装成桌面 / 手机 App（PWA）。
+
+```bash
+npm run icons   # 生成应用图标（纯标准库，无需 Pillow）
+npm run build   # 从 offer-compass.html 生成 app/index.html（注入 PWA 头）
+# 部署 app/ 目录到任意静态托管，或本地起服务后用浏览器「安装」
+python3 -m http.server 8080 --directory app
+```
+
+Chrome / Edge 会出现「安装」图标，装完就是独立窗口的桌面 App；手机浏览器选「添加到主屏幕」。安装后**断网也能完整使用**（service worker 缓存全部资源），数据与图标都留在本机。
+
 ## 使用示例
 
 ### 1. 四步算清一个 Offer
@@ -96,7 +107,7 @@ node tests/calc.test.js     # 或 npm test
 - **算出来比 HR 说的多/少**：先核对「月均应发」是否含奖金津贴（不是基本工资），再确认当地社平工资口径；封顶只对高收入者生效
 - **年终奖建议金额为什么比我要的少**：那是无效区间上沿，多发一元会跳档，到手反而少；页面会给出「拿多少最划算」
 - **JD 分析没识别出某个词**：内置词库覆盖常见技术栈，未收录的词会走通用学习框架；也可以在 Issue 里贴 JD，我把它加进词库
-- **换电脑数据没了**：数据存在浏览器 localStorage，不跨设备同步，也不上传；这是隐私设计，不是缺陷
+- **换电脑数据没了**：数据存在浏览器 localStorage，不跨设备同步、不上传（隐私设计）；迁移用底部「💾 数据备份」导出 JSON，在新设备导入即可
 
 ## 工作原理
 
@@ -115,7 +126,7 @@ node tests/calc.test.js     # 或 npm test
 
 ### 3. 测试即证明
 
-`tests/calc.test.js` 不在测试里重写算法，而是**从 `offer-compass.html` 抽出内联脚本**，在最小 DOM 桩上执行，再对真实函数做断言。66 项覆盖：工龄（含闰年、差一天不满整年）、N 的 0.5/1/多档、年终奖各档税额、无效区间自洽、综合所得税率表、Offer 年化、JD 词频、复盘分类、知识库完整性。
+`tests/calc.test.js` 不在测试里重写算法，而是**从 `offer-compass.html` 抽出内联脚本**，在最小 DOM 桩上执行，再对真实函数做断言。70 项覆盖：工龄（含闰年、差一天不满整年）、N 的 0.5/1/多档、年终奖各档税额、无效区间自洽、综合所得税率表、Offer 年化、JD 词频、复盘分类、知识库完整性。
 
 > 这套测试上线时抓到一个真 bug：单独计税误用年度税率表，96000 的年终奖被算成 3%（应为 10%，9390 元）。已修复并留了回归断言。
 
@@ -129,11 +140,19 @@ node tests/calc.test.js     # 或 npm test
 
 ```text
 .
-├── offer-compass.html          # 单文件应用：六大模块 + 样式 + 脚本 + 页面自检
+├── offer-compass.html          # 单文件应用源码：六大模块 + 样式 + 脚本 + 页面自检
+├── app/                        # PWA 发布目录（构建产物 + 清单 + SW + 图标）
+│   ├── index.html              # 由 tools/build-app.js 从源码注入 PWA 头生成
+│   ├── manifest.webmanifest    # 应用清单（standalone / 主题色 / 图标）
+│   ├── sw.js                   # 离线缓存：缓存优先 + 网络回填 + 版本清理
+│   └── icon-*.png              # 应用图标（tools/make_icons.py 生成）
+├── tools/
+│   ├── build-app.js            # 单源构建：源码 → app/index.html
+│   └── make_icons.py           # 图标生成（纯标准库 PNG 编码）
 ├── tests/
-│   └── calc.test.js            # 66 项零依赖断言（抽出页面脚本执行）
-├── .github/workflows/test.yml  # CI：push / PR 自动跑测试
-├── package.json                # npm test 入口，无任何依赖
+│   └── calc.test.js            # 70 项零依赖断言（抽出页面脚本执行）
+├── .github/workflows/test.yml  # CI：push / PR 自动跑测试 + 构建校验
+├── package.json                # test / icons / build 入口，无任何依赖
 ├── README.md                   # 本文件
 ├── SUBMISSION.md               # 投稿材料：表单填写、截图清单、社媒文案
 ├── CONTEST_DECLARATION.md      # 参赛声明
@@ -143,7 +162,7 @@ node tests/calc.test.js     # 或 npm test
 ## 测试
 
 ```bash
-node tests/calc.test.js    # ✓ 66 passed, 0 failed
+node tests/calc.test.js    # ✓ 70 passed, 0 failed
 ```
 
 页面内也有等价入口：底部「🧪 计算器自检」，一键跑 15 项核心断言，不装 Node 也能验证。
@@ -151,7 +170,7 @@ node tests/calc.test.js    # ✓ 66 passed, 0 failed
 ## 边界与合规
 
 1. **不构成专业意见**。补偿与税务结果为通用规则估算，各地执行口径有差异，重大决策请咨询律师 / 税务师。
-2. **不采集任何数据**。无后端、无埋点、无第三方脚本；简历、Offer、面试记录只写进本机 localStorage，清浏览器数据即消失。
+2. **不采集任何数据**。无后端、无埋点、无第三方脚本；简历、Offer、面试记录只写进本机 localStorage，清浏览器数据即消失。需要迁移/留档时用「💾 数据备份」导出 JSON，文件在本机生成、由你自行保管。
 3. **不代填、不代提交**。只做计算与清单，不涉及任何账号、支付、投递动作。
 4. **政策时效**。年终奖单独计税政策执行至 2027-12-31；补偿规则依据现行《劳动合同法》。政策变动会在 README 与页面口径说明中同步。
 5. **素材**。无第三方图片、字体、图标资源，视觉全部由 CSS 实现；不涉及任何商标素材。
@@ -165,6 +184,6 @@ node tests/calc.test.js    # ✓ 66 passed, 0 failed
 | `offer-compass.html` | 可运行的作品本体（线上体验链接见顶部） |
 | `SUBMISSION.md` | 投稿表单逐字段文案、截图清单、社媒分享文案 |
 | `CONTEST_DECLARATION.md` | 参赛声明 |
-| `tests/calc.test.js` | 计算正确性凭据（66 项断言） |
+| `tests/calc.test.js` | 计算正确性凭据（70 项断言） |
 
 本项目为 WorkBuddy「1024 造物挑战」参赛作品，非腾讯官方产品。输出仅供参考。
