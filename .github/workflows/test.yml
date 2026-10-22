@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  calc:
-    name: 计算核心断言
+  test:
+    name: 计算断言 + 结构冒烟
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,8 +18,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: 运行测试（零依赖）
+      - name: 计算核心断言（零依赖）
         run: node tests/calc.test.js
+      - name: 结构完整性冒烟测试
+        run: node tests/structure.test.js
       - name: 构建 PWA 版本（校验图标与清单齐全）
         run: |
           python tools/make_icons.py
