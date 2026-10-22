@@ -49,7 +49,7 @@ const handlers = new Set();
 while ((m = handlerRe.exec(src))) handlers.add(m[1]);
 
 const defined = new Set();
-const defRe = /(?:^|\n)\s*(?:function\s+([A-Za-z_$][\w$]*)\s*\(|var\s+([A-Za-z_$][\w$]*)\s*=\s*function)/g;
+const defRe = /(?:^|\n)\s*(?:async\s+)?(?:function\s+([A-Za-z_$][\w$]*)\s*\(|var\s+([A-Za-z_$][\w$]*)\s*=\s*function)/g;
 while ((m = defRe.exec(src))) defined.add(m[1] || m[2]);
 
 ok('onclick 绑定的函数数 ≥ 15', handlers.size >= 15, '当前 ' + handlers.size);
@@ -82,7 +82,7 @@ ok('标签 target 都能找到对应面板', tabTargets.every((t) => panes.inclu
   tabTargets.filter((t) => !panes.includes(t)).join(', '));
 ok('没有孤立面板（面板都有标签入口）', panes.every((p) => tabTargets.includes(p)),
   panes.filter((p) => !tabTargets.includes(p)).join(', '));
-ok('标签 + 面板数量为 7（七大模块）', tabTargets.length === 7, '当前 ' + tabTargets.length);
+ok('标签 + 面板数量为 8（八大模块）', tabTargets.length === 8, '当前 ' + tabTargets.length);
 
 /* ---------- 5. 每个面板内至少有一个可执行动作 ---------- */
 panes.forEach((p) => {
@@ -107,8 +107,16 @@ const features = [
   ['JD 匹配', 'calcJD'],
   ['简历体检', 'auditResume'],
   ['简历/JD 跨页同步', 'reloadSavedViews'],
-  ['复盘导出', 'exportInterviews']
+  ['复盘导出', 'exportInterviews'],
+  ['简历文件导入', 'handleResumeFile'],
+  ['docx 解析', 'parseDocx'],
+  ['PDF 解析', 'parsePdf'],
+  ['ZIP 解压', 'zipExtractFile']
 ];
+/* 「我的简历」面板的关键 id 必须真实存在 */
+['pfFile', 'pfRes', 'pfMeta', 'pfHint'].forEach((id) => {
+  ok('我的简历面板 id 存在：' + id, idSet.has(id));
+});
 features.forEach(([label, fn]) => {
   ok('能力入口存在：' + label + '（' + fn + '）', defined.has(fn));
 });

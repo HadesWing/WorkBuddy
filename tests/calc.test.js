@@ -39,7 +39,7 @@ let api;
 try {
   const factory = new Function(
     'document', 'window', 'navigator', 'localStorage', 'alert', 'confirm', 'Blob', 'URL', 'setTimeout', 'clearTimeout',
-    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS,posNum,kbLookup,kbCard,kbGeneric,ALIAS,KB_DEEP,KB_PATCH,resumeAudit,resumeSkeleton,rRewrite,rHasMetric,STRONG_V};'
+    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS,posNum,kbLookup,kbCard,kbGeneric,ALIAS,KB_DEEP,KB_PATCH,resumeAudit,resumeSkeleton,rRewrite,rHasMetric,STRONG_V,entDecode,docxXmlToText,zipEntries,zipExtractFile,parseDocx};'
   );
   api = factory(documentStub, windowStub, {}, { getItem: () => null, setItem: noop, removeItem: noop },
     noop, () => false, function () {}, { createObjectURL: () => 'blob:', revokeObjectURL: noop }, () => 0, noop);
@@ -286,12 +286,51 @@ ok('简历骨架：缺失关键词会被写进「正在补」', (() => {
   return api.resumeSkeleton(r).indexOf('正在补') >= 0;
 })());
 
+/* ---------- 10. 简历导入：XML 实体与 docx 抽文本（同步部分） ---------- */
+eq('entDecode：&amp;', api.entDecode('A&amp;B'), 'A&B');
+eq('entDecode：&lt;&gt;&quot;&apos;', api.entDecode('&lt;div&gt; &quot;q&quot; &apos;a&apos;'), '<div> "q" \'a\'');
+eq('entDecode：十六进制实体 &#x41;', api.entDecode('&#x41;'), 'A');
+eq('entDecode：十进制实体 &#32599;', api.entDecode('&#32599;'), '罗');
+eq('entDecode：非法实体原样保留', api.entDecode('&notanentity;'), '&notanentity;');
+eq('entDecode：越界码位原样保留', api.entDecode('&#x110000;'), '&#x110000;');
+eq('docxXmlToText：段落断行', api.docxXmlToText('<w:p><w:t>a</w:t></w:p><w:p><w:t>b</w:t></w:p>'), 'a\nb');
+eq('docxXmlToText：<w:tab/> 与 <w:br/>（前有正文行，行首制表符不被裁剪）', api.docxXmlToText('<w:p><w:t>z</w:t></w:p><w:p><w:r><w:tab/><w:t>x</w:t></w:r><w:r><w:br/><w:t>y</w:t></w:r></w:p>'), 'z\n\tx\ny');
+ok('docxXmlToText：域代码 instrText 被剔除', api.docxXmlToText('<w:p><w:r><w:instrText>PAGE</w:instrText><w:t>正文</w:t></w:r></w:p>').indexOf('PAGE') < 0);
+ok('docxXmlToText：首尾空白被裁剪', api.docxXmlToText('<w:p><w:t>  hello  </w:t></w:p>') === 'hello');
+
+/* ---------- 11. 简历导入：真实 zip 结构解压（异步） ---------- */
+(async () => {
+  const zipBuf = fs.readFileSync(path.join(__dirname, 'fixtures', 'sample.docx'));
+  const ab = zipBuf.buffer.slice(zipBuf.byteOffset, zipBuf.byteOffset + zipBuf.byteLength);
+  const entries = api.zipEntries(new Uint8Array(ab));
+  eq('zipEntries：夹具条目数', entries.length, 3);
+  ok('zipEntries：包含 word/document.xml 且为 deflate',
+    entries.some(e => e.name === 'word/document.xml' && e.method === 8));
+  let rejected = false;
+  try { await api.zipExtractFile(ab, 'word/nothing.xml'); } catch (e) { rejected = true; }
+  ok('zipExtractFile：不存在的条目会抛错', rejected);
+  const u8 = await api.zipExtractFile(ab, 'word/document.xml');
+  const text = api.docxXmlToText(new TextDecoder().decode(u8));
+  ok('parseDocx：正文首行', text.indexOf('张三 · 后端开发工程师') === 0);
+  ok('parseDocx：实体还原', text.indexOf('5 年经验 & 熟悉 C++ <服务端>') >= 0);
+  ok('parseDocx：域代码不出现在正文', text.indexOf('MERGEFORMAT') < 0);
+  ok('parseDocx：量化成果保留', text.indexOf('QPS 从 800 提升到 5200') >= 0);
+  ok('parseDocx：<w:br/> 断行', text.indexOf('技能：Java\nGo、Kafka') >= 0);
+  ok('parseDocx：数字/十六进制实体还原', text.indexOf('Rx 5200 罗马') >= 0);
+  summary();
+})().catch(e => {
+  fails.push({ name: 'docx 异步解压测试执行失败', got: String(e && e.message || e), exp: '无异常' });
+  summary();
+});
+
 /* ---------- 输出 ---------- */
-const total = pass + fails.length;
-if (fails.length) {
-  console.log('\n失败用例：');
-  fails.forEach(f => console.log('  ✗ ' + f.name + '\n      got=' + JSON.stringify(f.got) + '  exp=' + JSON.stringify(f.exp)));
-  console.log('\n✗ ' + pass + ' passed, ' + fails.length + ' failed（共 ' + total + ' 项）\n');
-  process.exit(1);
+function summary() {
+  const total = pass + fails.length;
+  if (fails.length) {
+    console.log('\n失败用例：');
+    fails.forEach(f => console.log('  ✗ ' + f.name + '\n      got=' + JSON.stringify(f.got) + '  exp=' + JSON.stringify(f.exp)));
+    console.log('\n✗ ' + pass + ' passed, ' + fails.length + ' failed（共 ' + total + ' 项）\n');
+    process.exit(1);
+  }
+  console.log('✓ ' + pass + ' passed, 0 failed（共 ' + total + ' 项断言）');
 }
-console.log('✓ ' + pass + ' passed, 0 failed（共 ' + total + ' 项断言）');
