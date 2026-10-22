@@ -561,14 +561,9 @@ function cmpOffers(){
     var ot=num('oOt'+i), cm=num('oCm'+i);
     var name=v('oName'+i)||('Offer '+(i+1));
     if(!sal){return;}
-    var cash=sal*mon+bon;
-    var fundY=sal*fund/100*12;             /* 公司+个人合计进入个人账户 */
-    var total=cash+fundY+eq;
-    var hoursY=(40+ot)*48;                 /* 年工时：48 工作周 */
-    var hourly=hoursY>0?cash/hoursY:0;
-    var commuteY=cm*2*250/60;              /* 年通勤小时：250 个工作日 */
-    data.push({name:name,sal:sal,mon:mon,bon:bon,cash:cash,fundY:fundY,eq:eq,
-      total:total,hourly:hourly,commuteY:commuteY,color:COLORS[data.length%4]});
+    var r=offerCalc({salary:sal,months:mon,bonus:bon,fund:fund,equity:eq,overtime:ot,commute:cm});
+    data.push({name:name,sal:sal,mon:mon,bon:bon,cash:r.cash,fundY:r.fundY,eq:eq,
+      total:r.total,hourly:r.hourly,commuteY:r.commuteY,color:COLORS[data.length%4]});
   });
   if(data.length<2){alert('请至少填写 2 个有月薪的 Offer');return;}
   data.sort(function(a,b){return b.total-a.total;});
@@ -599,17 +594,47 @@ function cmpOffers(){
   document.getElementById('cmpRes').innerHTML=rows+advice;
 }
 
+/* ═══════════ 纯计算核心（供界面与自检/测试复用，勿依赖 DOM） ═══════════ */
+/* 工龄月数：满月计，日不足则当月不计；d1 不早于 d2 返回 -1 */
+function compMonths(din,dout){
+  var d1=new Date(din),d2=new Date(dout);
+  if(!(d1<d2))return -1;
+  var m=(d2.getFullYear()-d1.getFullYear())*12+(d2.getMonth()-d1.getMonth());
+  if(d2.getDate()<d1.getDate())m--;
+  return Math.max(0,m);
+}
+/* 补偿月数 N：每满 1 年 1 个月；满 6 个月不满 1 年按 1 年；不满 6 个月半个月（第 47 条） */
+function nOfM(m){
+  var y=Math.floor(m/12),r=m%12;
+  return y+(r>=6?1:(r>0?0.5:0));
+}
+/* 全年一次性奖金单独计税：按奖金÷12 定税率，按全额计税 */
+function bonusTaxInfo(bonus){
+  var mA=bonus/12;
+  for(var i=0;i<BRK.length;i++){
+    if(mA<=BRK[i][0])return{tax:bonus*BRK[i][1]-BRK[i][2],rate:BRK[i][1],ded:BRK[i][2]};
+  }
+  return{tax:0,rate:0,ded:0};
+}
+/* Offer 年化：现金年包 / 公积金年缴存 / 综合年包 / 时薪 / 年通勤小时 */
+function offerCalc(o){
+  var cash=o.salary*o.months+o.bonus;
+  var fundY=o.salary*o.fund/100*12;      /* 公司+个人合计进入个人账户 */
+  var total=cash+fundY+o.equity;
+  var hoursY=(40+o.overtime)*48;         /* 年工时：48 工作周 */
+  var commuteY=o.commute*2*250/60;       /* 年通勤小时：250 个工作日 */
+  return{cash:cash,fundY:fundY,total:total,
+    hourly:hoursY>0?cash/hoursY:0,commuteY:commuteY};
+}
+
 /* ═══════════ P2 离职补偿 ═══════════ */
 function calcComp(){
   var din=v('cIn'), dout=v('cOut'), sal=num('cSal'), avg=num('cAvg'), type=v('cType');
   if(!din||!dout||!sal){alert('请填写入职日期、离职日期和平均工资');return;}
-  var d1=new Date(din), d2=new Date(dout);
-  if(d2<=d1){alert('离职日期需要晚于入职日期');return;}
-  var months=(d2.getFullYear()-d1.getFullYear())*12+(d2.getMonth()-d1.getMonth());
-  if(d2.getDate()<d1.getDate())months--;
-  months=Math.max(0,months);
+  var months=compMonths(din,dout);
+  if(months<0){alert('离职日期需要晚于入职日期');return;}
   var years=Math.floor(months/12), rem=months%12;
-  var n=years+(rem>=6?1:(rem>0?0.5:0));
+  var n=nOfM(months);
   var capped=false, base=sal;
   if(avg>0 && sal>3*avg){ base=3*avg; capped=true; n=Math.min(n,12); }
   var amount=base*n, extra=0;
@@ -650,9 +675,8 @@ function calcBonus(){
   if(bonus<=0){alert('请填写年终奖金额');return;}
   var salary=num('bSalary'), sb=num('bSb'), kk=num('bKk');
   /* A. 单独计税 */
-  var mA=bonus/12, rateA=0, dedA=0;
-  for(var i=0;i<BRK.length;i++){ if(mA<=BRK[i][0]){rateA=BRK[i][1];dedA=BRK[i][2];break;} }
-  var taxA=bonus*rateA-dedA, netA=bonus-taxA;
+  var bi=bonusTaxInfo(bonus);
+  var rateA=bi.rate, dedA=bi.ded, taxA=bi.tax, netA=bonus-taxA;
   /* B. 并入综合所得 */
   var html='', hasB=salary>0;
   var bRow='<div class="kpi"><div class="big">¥ '+fmt(netA)+'<small> 单独计税到手</small></div>'
