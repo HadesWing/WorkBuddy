@@ -39,7 +39,7 @@ let api;
 try {
   const factory = new Function(
     'document', 'window', 'navigator', 'localStorage', 'alert', 'confirm', 'Blob', 'URL', 'setTimeout', 'clearTimeout',
-    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats};'
+    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS};'
   );
   api = factory(documentStub, windowStub, {}, { getItem: () => null, setItem: noop, removeItem: noop },
     noop, () => false, function () {}, { createObjectURL: () => 'blob:', revokeObjectURL: noop }, () => 0, noop);
@@ -162,6 +162,34 @@ eq('备份：四个键不与业务键脱节', api.BK_KEYS.map(k => k[0]).sort(),
   ['wdc_interviews_v1', 'wdc_jd_v1', 'wdc_offers_v1', 'wdc_resume_v1']);
 const emptyStats = api.bkStats();
 eq('备份：空存储下统计为 0 条', [emptyStats.offers, emptyStats.ints, emptyStats.res, emptyStats.jd], [0, 0, 0, 0]);
+
+/* ---------- 10. 示例数据必须真的跑得出结论 ---------- */
+function sampleOffer(o) {
+  return api.offerCalc({
+    salary: +o.sal, months: +o.mon, bonus: +o.bon, fund: +o.fund,
+    equity: +o.eq, overtime: +o.ot, commute: +o.cm
+  });
+}
+eq('示例：Offer 数量为 2（够对比）', api.SAMPLE_OFFERS.length, 2);
+const sA = sampleOffer(api.SAMPLE_OFFERS[0]);
+const sB = sampleOffer(api.SAMPLE_OFFERS[1]);
+ok('示例：A 的综合总包高于 B（总包故事成立）', sA.total > sB.total);
+ok('示例：B 的真实时薪高于 A（时薪故事成立）', sB.hourly > sA.hourly);
+ok('示例：两者总包差 ≥ 10 万，差距足够显眼', sA.total - sB.total >= 100000);
+ok('示例：两者时薪差 ≥ 5 元/小时，不是误差级', sB.hourly - sA.hourly >= 5);
+
+const sJd = api.kwCount(api.SAMPLE_JD);
+const sRes = api.kwCount(api.SAMPLE_RESUME);
+const sJdKeys = Object.keys(sJd);
+const sMiss = sJdKeys.filter((k) => sRes[k] === undefined);
+ok('示例：JD 能抽出 ≥ 15 个关键词', sJdKeys.length >= 15);
+ok('示例：简历覆盖率介于 5%—60%（既不是全中也不是全空）',
+  sMiss.length > 0 && sMiss.length < sJdKeys.length);
+ok('示例：缺失项里 ≥ 10 个有速学卡片（能立刻展示知识输出）',
+  sMiss.filter((k) => api.KB[k]).length >= 10);
+eq('示例：复盘记录 2 条', api.SAMPLE_INTS.length, 2);
+eq('示例：Kafka 问题归类到分布式与架构', api.autoCat(api.SAMPLE_INTS[0].q[1]), '分布式与架构');
+eq('示例：手撕题归类到算法手撕', api.autoCat(api.SAMPLE_INTS[1].q[0]), '算法手撕');
 
 /* ---------- 输出 ---------- */
 const total = pass + fails.length;

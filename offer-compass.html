@@ -44,6 +44,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .pane.on{display:block;animation:fadein .25s}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
+/* 示例数据引导条 */
+.demo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;
+  background:linear-gradient(135deg,#EAFBF3,#F3FCF8);border:1.5px dashed var(--brandline);
+  border-radius:14px;padding:11px 14px;margin-bottom:16px}
+.demo-txt{font-size:13.5px;color:var(--ink2);flex:1;min-width:190px;line-height:1.55}
+.demo-act{display:flex;gap:8px;flex:none;flex-wrap:wrap}
+.demo.is-off{display:none}
+
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
   padding:20px;box-shadow:var(--shadow);margin-bottom:18px}
 .card h2{font-size:17px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
@@ -157,6 +165,14 @@ footer a{color:var(--brand2);text-decoration:none}
     <button class="tab" data-t="p3"><span class="t-ico">🧾</span>年终奖个税</button>
     <button class="tab" data-t="p6"><span class="t-ico">📝</span>面试复盘库</button>
     <button class="tab" data-t="p4"><span class="t-ico">📋</span>离职小抄</button>
+  </div>
+
+  <div class="demo" id="demoBar">
+    <div class="demo-txt" id="demoTxt">👀 <b>第一次来？</b>不用自己填 —— 载入一组示例，六个模块立刻跑出结果，30 秒看完。</div>
+    <div class="demo-act" id="demoAct">
+      <button class="btn btn-sm btn-main" onclick="loadSample()">载入示例数据</button>
+      <button class="btn btn-sm btn-ghost" onclick="closeDemo()">自己填</button>
+    </div>
   </div>
 
   <!-- ═══════════ P1 Offer 对比 ═══════════ -->
@@ -322,6 +338,10 @@ footer a{color:var(--brand2);text-decoration:none}
 
 <script>
 /* ═══════════ tabs ═══════════ */
+function gotoTab(id){
+  var t=document.querySelector('.tab[data-t="'+id+'"]');
+  if(t)t.click();
+}
 document.querySelectorAll('.tab').forEach(function(t){
   t.onclick=function(){
     document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
@@ -330,6 +350,101 @@ document.querySelectorAll('.tab').forEach(function(t){
     document.getElementById(t.dataset.t).classList.add('on');
   };
 });
+
+/* ═══════════ 示例数据：让新用户/评委一次看完六个模块 ═══════════ */
+var SAMPLE_OFFERS=[
+  {name:'A 公司 · 后端开发（大小周）',sal:'24000',mon:'15',bon:'30000',
+   fund:'24',eq:'100000',ot:'12',cm:'45'},
+  {name:'B 公司 · 平台研发（双休）',sal:'22000',mon:'14',bon:'30000',
+   fund:'24',eq:'0',ot:'2',cm:'20'}
+];
+var SAMPLE_RESUME='5 年 Linux C++ 开发经验，嵌入式方向。\n'
+ +'负责过 ARM 平台驱动开发、BSP 移植，熟悉多线程编程与 epoll 事件循环。\n'
+ +'网络协议：熟悉 TCP/IP、socket 编程、MQTT。\n'
+ +'数据库：MySQL 基本增删改查、Redis 做缓存。\n'
+ +'调试与工具：GDB、perf、交叉编译、CMake、Git。';
+var SAMPLE_JD='岗位职责：\n'
+ +'1. 负责后端微服务的设计与开发，参与高并发系统的架构演进；\n'
+ +'2. 基于 Kubernetes 与 Docker 完成服务容器化部署与弹性伸缩；\n'
+ +'3. 使用 Kafka 构建异步消息链路，处理分布式事务一致性问题；\n'
+ +'4. 维护 Redis 集群与 MySQL 索引优化，保障核心接口性能；\n'
+ +'5. 使用 gRPC 完成服务间通信，推进 CI/CD 流水线与灰度发布；\n'
+ +'6. 参与系统性能优化与稳定性治理，编写技术方案与复盘文档。\n'
+ +'任职要求：\n'
+ +'1. 熟悉 Go 或 Java，了解微服务治理与限流熔断；\n'
+ +'2. 熟悉 Linux 常用命令，具备线上问题排查能力；\n'
+ +'3. 对分布式系统、消息队列、缓存一致性有实践经验。';
+var SAMPLE_INTS=[
+  {co:'A 公司',pos:'后端开发',date:'2026-10-15',round:'二面',cat:'auto',sample:true,
+   q:['Redis 集群的槽位迁移过程中，客户端会读到旧数据吗？','Kafka 如何保证消息不丢？'],
+   note:'二面偏架构，问得很细。对分布式一致性的回答只讲到了「加锁」，面试官追问了 CAP 取舍，没接住。'},
+  {co:'B 公司',pos:'平台研发',date:'2026-10-18',round:'一面',cat:'auto',sample:true,
+   q:['手撕：合并 K 个有序链表','Kafka 如何保证消息不丢？'],
+   note:'算法题思路对了但边界没处理空链表；Kafka 那题第二次被问到，必须准备标准答案。'}
+];
+function loadSample(){
+  var has=collectOffers().some(function(o){return o.name||o.sal||o.bon});
+  if(has&&!confirm('载入示例会覆盖当前的 Offer / 简历 / JD；面试复盘会追加 2 条示例记录。继续？'))return;
+
+  /* Offer 两个：一个总包高但加班多，一个总包低但时薪可能更高 */
+  document.getElementById('offerList').innerHTML=''; offerSeq=0;
+  SAMPLE_OFFERS.forEach(function(o){
+    addOffer();
+    var i=offerSeq-1;
+    document.getElementById('oName'+i).value=o.name;
+    document.getElementById('oSal'+i).value=o.sal;
+    document.getElementById('oMon'+i).value=o.mon;
+    document.getElementById('oBon'+i).value=o.bon;
+    document.getElementById('oFund'+i).value=o.fund;
+    document.getElementById('oEq'+i).value=o.eq;
+    document.getElementById('oOt'+i).value=o.ot;
+    document.getElementById('oCm'+i).value=o.cm;
+  });
+  try{localStorage.setItem(K_OFF,JSON.stringify(collectOffers()))}catch(e){}
+
+  /* 离职补偿 */
+  document.getElementById('cIn').value='2020-03-10';
+  document.getElementById('cOut').value='2026-09-20';
+  document.getElementById('cSal').value='25000';
+  document.getElementById('cAvg').value='12000';
+  document.getElementById('cType').value='n1';
+
+  /* 年终奖：96000 正好落在无效区间附近，能演示跳档 */
+  document.getElementById('bBonus').value='96000';
+  document.getElementById('bSalary').value='300000';
+  document.getElementById('bSb').value='45000';
+  document.getElementById('bKk').value='60000';
+
+  /* 简历 / JD */
+  document.getElementById('jRes').value=SAMPLE_RESUME;
+  document.getElementById('jJd').value=SAMPLE_JD;
+  try{
+    localStorage.setItem(K_RES,SAMPLE_RESUME);
+    localStorage.setItem(K_JD,SAMPLE_JD);
+  }catch(e){}
+
+  /* 面试复盘：追加两条（带 sample 标记，可一键清掉） */
+  try{
+    var arr=getInts().filter(function(x){return !x.sample;});
+    SAMPLE_INTS.slice().reverse().forEach(function(s){ arr.unshift(s); });
+    localStorage.setItem(K_INT,JSON.stringify(arr));
+  }catch(e){}
+
+  /* 六个模块全部跑一遍，切回第一个标签 */
+  cmpOffers(); calcComp(); calcBonus(); calcJD(); renderInts();
+  gotoTab('p1');
+
+  document.getElementById('demoTxt').innerHTML=
+    '✅ <b>示例已就绪</b>：2 个 Offer、1 份简历与 JD、2 条面试复盘都已填好，<b>六个模块的结果也已经算好</b>，点上面的标签逐个看。';
+  document.getElementById('demoAct').innerHTML=
+    '<button class="btn btn-sm btn-ghost" onclick="clearSample()">清空示例</button>';
+}
+function clearSample(){
+  if(!confirm('清空全部本地数据（含示例与你自己填的内容）？'))return;
+  BK_KEYS.forEach(function(k){ try{localStorage.removeItem(k[0])}catch(e){} });
+  location.reload();
+}
+function closeDemo(){document.getElementById('demoBar').classList.add('is-off');}
 
 function fmt(n){ if(!isFinite(n))return '—';
   return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,','); }
