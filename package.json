@@ -4,7 +4,9 @@
   "private": true,
   "description": "打工人决策台 · 跳槽季的六个硬核工具（Offer 对比 / JD 匹配 / 离职补偿 / 年终奖个税 / 面试复盘 / 离职小抄）",
   "scripts": {
-    "test": "node tests/calc.test.js"
+    "test": "node tests/calc.test.js",
+    "icons": "python tools/make_icons.py",
+    "build": "node tools/build-app.js"
   },
   "keywords": [
     "workbuddy",

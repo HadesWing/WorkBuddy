@@ -15,5 +15,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
       - name: 运行测试（零依赖）
         run: node tests/calc.test.js
+      - name: 构建 PWA 版本（校验图标与清单齐全）
+        run: |
+          python tools/make_icons.py
+          node tools/build-app.js
+          test -f app/index.html
