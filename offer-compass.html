@@ -469,6 +469,8 @@ function fmt1(n){ if(!isFinite(n))return '—';
   return n.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
 function v(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
 function num(id){ var x=parseFloat(v(id)); return isFinite(x)?x:0; }
+/* 非负守卫：负数、NaN、空值统一归 0，避免脏输入污染计算结果 */
+function posNum(x){ x=parseFloat(x); return (isFinite(x)&&x>0)?x:0; }
 
 /* ═══════════ P1 Offer 对比 ═══════════ */
 var offerSeq=0;
@@ -698,18 +700,25 @@ renderInts();
 function cmpOffers(){
   var cards=document.querySelectorAll('.offer-card');
   if(cards.length<2){alert('请至少保留 2 个 Offer 再对比');return;}
-  var data=[];
+  var data=[],skipped=0;
   cards.forEach(function(c){
     var i=c.id.slice(2);
     var sal=num('oSal'+i), mon=parseFloat(v('oMon'+i))||12;
-    var bon=num('oBon'+i), fund=num('oFund'+i), eq=num('oEq'+i);
-    var ot=num('oOt'+i), cm=num('oCm'+i);
+    var bon=posNum(num('oBon'+i)), fund=posNum(num('oFund'+i)), eq=posNum(num('oEq'+i));
+    var ot=posNum(num('oOt'+i)), cm=posNum(num('oCm'+i));
     var name=v('oName'+i)||('Offer '+(i+1));
-    if(!sal){return;}
+    if(!(sal>0)){skipped++;return;}   /* 月薪缺失或非正数：跳过并计数，不拿脏数字参与排名 */
     var r=offerCalc({salary:sal,months:mon,bonus:bon,fund:fund,equity:eq,overtime:ot,commute:cm});
     data.push({name:name,sal:sal,mon:mon,bon:bon,cash:r.cash,fundY:r.fundY,eq:eq,
       total:r.total,hourly:r.hourly,commuteY:r.commuteY,color:COLORS[data.length%4]});
   });
+  if(skipped>0&&data.length>=2){
+    setTimeout(function(){/* 结果区顶部追加提示（不阻塞计算）*/
+      var box=document.getElementById('cmpRes');
+      if(box&&box.innerHTML.indexOf('已跳过')<0)
+        box.insertAdjacentHTML('afterbegin','<div class="tipbox" style="margin-bottom:10px">⚠️ 有 '+skipped+' 个 Offer 因「月薪未填或不是正数」被跳过，未参与排名。</div>');
+    },0);
+  }
   if(data.length<2){alert('请至少填写 2 个有月薪的 Offer');return;}
   data.sort(function(a,b){return b.total-a.total;});
   var maxT=data[0].total;
@@ -778,6 +787,8 @@ function offerCalc(o){
 function calcComp(){
   var din=v('cIn'), dout=v('cOut'), sal=num('cSal'), avg=num('cAvg'), type=v('cType');
   if(!din||!dout||!sal){alert('请填写入职日期、离职日期和平均工资');return;}
+  if(!(sal>0)){alert('平均工资需要是大于 0 的数字');return;}
+  if(avg<0){alert('当地社平工资需要是大于 0 的数字（不填则不判断封顶）');return;}
   var months=compMonths(din,dout);
   if(months<0){alert('离职日期需要晚于入职日期');return;}
   var years=Math.floor(months/12), rem=months%12;

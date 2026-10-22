@@ -39,7 +39,7 @@ let api;
 try {
   const factory = new Function(
     'document', 'window', 'navigator', 'localStorage', 'alert', 'confirm', 'Blob', 'URL', 'setTimeout', 'clearTimeout',
-    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS};'
+    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS,posNum};'
   );
   api = factory(documentStub, windowStub, {}, { getItem: () => null, setItem: noop, removeItem: noop },
     noop, () => false, function () {}, { createObjectURL: () => 'blob:', revokeObjectURL: noop }, () => 0, noop);
@@ -190,6 +190,15 @@ ok('示例：缺失项里 ≥ 10 个有速学卡片（能立刻展示知识输�
 eq('示例：复盘记录 2 条', api.SAMPLE_INTS.length, 2);
 eq('示例：Kafka 问题归类到分布式与架构', api.autoCat(api.SAMPLE_INTS[0].q[1]), '分布式与架构');
 eq('示例：手撕题归类到算法手撕', api.autoCat(api.SAMPLE_INTS[1].q[0]), '算法手撕');
+
+/* ---------- 11. 脏输入守卫 posNum ---------- */
+eq('posNum：负数归 0', api.posNum(-5), 0);
+eq('posNum：0 归 0', api.posNum(0), 0);
+eq('posNum：非数字归 0', api.posNum('abc'), 0);
+eq('posNum：空串归 0', api.posNum(''), 0);
+eq('posNum：Infinity 归 0', api.posNum(Infinity), 0);
+eq('posNum：正常值原样返回', api.posNum('12.5'), 12.5);
+eq('posNum：数字字符串返回数值', api.posNum(3000), 3000);
 
 /* ---------- 输出 ---------- */
 const total = pass + fails.length;
