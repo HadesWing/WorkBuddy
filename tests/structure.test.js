@@ -111,12 +111,16 @@ const features = [
   ['简历文件导入', 'handleResumeFile'],
   ['docx 解析', 'parseDocx'],
   ['PDF 解析', 'parsePdf'],
-  ['ZIP 解压', 'zipExtractFile']
+  ['ZIP 解压', 'zipExtractFile'],
+  ['JD 链接导入', 'fetchJDFromUrl'],
+  ['JD 正文清洗', 'jdCleanUp']
 ];
 /* 「我的简历」面板的关键 id 必须真实存在 */
 ['pfFile', 'pfRes', 'pfMeta', 'pfHint'].forEach((id) => {
   ok('我的简历面板 id 存在：' + id, idSet.has(id));
 });
+/* JD 链接导入的 id */
+ok('JD 链接输入框 id 存在：jUrl', idSet.has('jUrl'));
 features.forEach(([label, fn]) => {
   ok('能力入口存在：' + label + '（' + fn + '）', defined.has(fn));
 });

@@ -39,7 +39,7 @@ let api;
 try {
   const factory = new Function(
     'document', 'window', 'navigator', 'localStorage', 'alert', 'confirm', 'Blob', 'URL', 'setTimeout', 'clearTimeout',
-    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS,posNum,kbLookup,kbCard,kbGeneric,ALIAS,KB_DEEP,KB_PATCH,resumeAudit,resumeSkeleton,rRewrite,rHasMetric,STRONG_V,entDecode,docxXmlToText,zipEntries,zipExtractFile,parseDocx};'
+    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS,posNum,kbLookup,kbCard,kbGeneric,ALIAS,KB_DEEP,KB_PATCH,resumeAudit,resumeSkeleton,rRewrite,rHasMetric,STRONG_V,entDecode,docxXmlToText,zipEntries,zipExtractFile,parseDocx,jdCleanUp};'
   );
   api = factory(documentStub, windowStub, {}, { getItem: () => null, setItem: noop, removeItem: noop },
     noop, () => false, function () {}, { createObjectURL: () => 'blob:', revokeObjectURL: noop }, () => 0, noop);
@@ -322,6 +322,12 @@ ok('docxXmlToText：首尾空白被裁剪', api.docxXmlToText('<w:p><w:t>  hello
   fails.push({ name: 'docx 异步解压测试执行失败', got: String(e && e.message || e), exp: '无异常' });
   summary();
 });
+
+/* ---------- 12. JD 链接导入：markdown 清洗 ---------- */
+eq('jdCleanUp：图片语法整段剔除', api.jdCleanUp('岗位 ![logo](https://x/a.png) 要求'), '岗位  要求');
+eq('jdCleanUp：链接只保留文字', api.jdCleanUp('[岗位职责](#p1)：开发'), '岗位职责：开发');
+eq('jdCleanUp：压缩连续空行', api.jdCleanUp('a\n\n\n\nb'), 'a\n\nb');
+eq('jdCleanUp：首尾空白裁剪', api.jdCleanUp('  \n hello \n\t'), 'hello');
 
 /* ---------- 输出 ---------- */
 function summary() {

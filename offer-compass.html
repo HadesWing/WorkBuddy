@@ -247,8 +247,13 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
       <div class="fld"><label class="f">我的简历（保存一次，长期使用）</label>
         <textarea id="jRes" rows="7" placeholder="粘贴简历文本（Word/PDF 里全选复制即可），会自动保存在本机…"></textarea>
         <div class="hint" id="jResHint">💾 输入后自动保存到本机，下次打开无需重贴。</div></div>
-      <div class="fld"><label class="f">职位描述 JD（每个岗位粘一次，自动记住）</label>
-        <textarea id="jJd" rows="7" placeholder="粘贴完整 JD 文本…"></textarea></div>
+      <div class="fld"><label class="f">职位描述 JD（每个岗位粘一次，自动记住）—— 也可以直接贴职位链接自动抓取</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <input type="url" id="jUrl" placeholder="粘贴职位链接，如 https://careers.qq.com/…/123.html" style="flex:1;min-width:220px">
+          <button class="btn btn-ghost" onclick="fetchJDFromUrl(this)">🔗 从链接导入</button>
+        </div>
+        <textarea id="jJd" rows="7" placeholder="粘贴完整 JD 文本，或用上方链接导入…"></textarea>
+        <div class="hint">🔗 链接导入会通过公共只读抓取服务（r.jina.ai）提取页面正文，<b>只会发送链接本身</b>，你的简历和本地数据不会离开浏览器；抓不到时（网站反爬/需登录）请手动复制粘贴。</div></div>
       <div style="margin-top:12px"><button class="btn btn-main" onclick="calcJD()">🎯 分析差距 · 生成速学清单</button></div>
       <div class="res" id="jdRes"></div>
     </div>
@@ -2031,6 +2036,39 @@ autoSaveTa(K_RES,'pfRes','pfHint');
   try{meta=JSON.parse(localStorage.getItem('wdc_resume_meta_v1')||'null')}catch(e){}
   if(len)pfSetMeta('💾 已保存简历 · '+len+' 字'+(meta&&meta.name?' · 来源：'+meta.name:''));
 })();
+
+/* ═══════════ JD 链接导入（经公共只读代理抓取正文，仅发送链接本身） ═══════════ */
+function jdCleanUp(t){
+  return String(t||'')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g,'')            /* 图片 */
+    .replace(/\[([^\]]*)\]\([^)]*\)/g,'$1')          /* 链接只留文字 */
+    .replace(/^\s*[-*]\s*\[[ xX]\]\s*$/gm,'')        /* 任务清单空项 */
+    .replace(/\r\n/g,'\n').replace(/\n{3,}/g,'\n\n')
+    .replace(/^[\s\u3000]+|[\s\u3000]+$/g,'');
+}
+async function fetchJDFromUrl(btn){
+  var url=rTrim(v('jUrl'));
+  if(!/^https?:\/\/\S+\.\S+/i.test(url)){alert('请先在输入框粘贴有效的职位链接（http/https 开头）');return;}
+  var old=btn.textContent;
+  btn.disabled=true; btn.textContent='⏳ 抓取中…';
+  try{
+    var r=await fetch('https://r.jina.ai/'+url).catch(function(){return null});
+    if(!r||!r.ok)throw new Error('抓取服务返回 HTTP '+(r?r.status:'网络错误')+'，或本机无法访问外网');
+    var txt=jdCleanUp(await r.text());
+    if(txt.length<120)throw new Error('只抓到 '+txt.length+' 字正文——该页面可能需要登录，或是动态渲染，程序读不到');
+    if(txt.length>30000)txt=txt.slice(0,30000);
+    var ta=document.getElementById('jJd');
+    if(ta){ta.value=txt; ta.dispatchEvent(new Event('input'));}
+    var out=document.getElementById('jdRes');
+    if(out)out.innerHTML='<div class="tipbox">✅ 已从链接导入 <b>'+txt.length+'</b> 字 JD 正文。建议快速检查开头/结尾有没有混入网站导航、推荐位等无关文字，删掉后关键词统计更准。</div>';
+  }catch(e){
+    var out2=document.getElementById('jdRes');
+    if(out2)out2.innerHTML='<div class="tipbox">❌ 自动抓取失败：'+esc(e.message)+'<br><b>备选方案</b>：浏览器打开该链接 → 全选复制 JD 文本 → 粘贴到下方输入框（多数招聘网站有反爬，手动粘贴永远可用）。</div>';
+  }finally{
+    btn.disabled=false; btn.textContent=old;
+  }
+}
+
 
 /* ═══════════ P7 简历优化（纯本地规则引擎，不依赖模型） ═══════════ */
 var STRONG_V=['主导','设计','实现','落地','重构','优化','搭建','推动','治理','沉淀','攻坚','迁移','上线','自动化','定位','压测','抽象','复用','降本','提效','交付','拆分','自研'];
