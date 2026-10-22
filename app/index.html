@@ -70,7 +70,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid .full{grid-column:1/-1}
 label.f{display:block;font-size:12.5px;color:var(--ink2);font-weight:600;margin-bottom:4px}
-input[type=text],input[type=number],input[type=date],select{width:100%;border:1.5px solid var(--line);
+input[type=text],input[type=number],input[type=date],input[type=url],select{width:100%;border:1.5px solid var(--line);
   border-radius:10px;padding:9px 12px;font-size:14.5px;font-family:inherit;color:var(--ink);
   background:#FBFCFC;outline:none;transition:border .15s}
 input:focus,select:focus{border-color:var(--brand);background:#fff}
@@ -164,6 +164,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
     <div class="tags">
       <span class="tag">⚖️ Offer 多维对比</span>
       <span class="tag">🎯 JD 匹配分析</span>
+      <span class="tag">👤 简历导入管理</span>
       <span class="tag">✍️ 简历优化体检</span>
       <span class="tag">💰 离职补偿 N / N+1 / 2N</span>
       <span class="tag">🧾 年终奖个税优化</span>
@@ -177,6 +178,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
   <div class="tabs">
     <button class="tab on" data-t="p1"><span class="t-ico">⚖️</span>Offer 对比</button>
     <button class="tab" data-t="p5"><span class="t-ico">🎯</span>JD 匹配分析</button>
+    <button class="tab" data-t="p8"><span class="t-ico">👤</span>我的简历</button>
     <button class="tab" data-t="p7"><span class="t-ico">✍️</span>简历优化</button>
     <button class="tab" data-t="p2"><span class="t-ico">💰</span>离职补偿</button>
     <button class="tab" data-t="p3"><span class="t-ico">🧾</span>年终奖个税</button>
@@ -185,7 +187,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
   </div>
 
   <div class="demo" id="demoBar">
-    <div class="demo-txt" id="demoTxt">👀 <b>第一次来？</b>不用自己填 —— 载入一组示例，七个模块立刻跑出结果，30 秒看完。</div>
+    <div class="demo-txt" id="demoTxt">👀 <b>第一次来？</b>不用自己填 —— 载入一组示例，八个模块立刻跑出结果，30 秒看完。</div>
     <div class="demo-act" id="demoAct">
       <button class="btn btn-sm btn-main" onclick="loadSample()">载入示例数据</button>
       <button class="btn btn-sm btn-ghost" onclick="closeDemo()">自己填</button>
@@ -254,10 +256,36 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
       <div class="fld"><label class="f">我的简历（保存一次，长期使用）</label>
         <textarea id="jRes" rows="7" placeholder="粘贴简历文本（Word/PDF 里全选复制即可），会自动保存在本机…"></textarea>
         <div class="hint" id="jResHint">💾 输入后自动保存到本机，下次打开无需重贴。</div></div>
-      <div class="fld"><label class="f">职位描述 JD（每个岗位粘一次，自动记住）</label>
-        <textarea id="jJd" rows="7" placeholder="粘贴完整 JD 文本…"></textarea></div>
+      <div class="fld"><label class="f">职位描述 JD（每个岗位粘一次，自动记住）—— 也可以直接贴职位链接自动抓取</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <input type="url" id="jUrl" placeholder="粘贴职位链接，如 https://careers.qq.com/…/123.html" style="flex:1;min-width:220px">
+          <button class="btn btn-ghost" onclick="fetchJDFromUrl(this)">🔗 从链接导入</button>
+        </div>
+        <textarea id="jJd" rows="7" placeholder="粘贴完整 JD 文本，或用上方链接导入…"></textarea>
+        <div class="hint">🔗 链接导入会通过公共只读抓取服务（r.jina.ai）提取页面正文，<b>只会发送链接本身</b>，你的简历和本地数据不会离开浏览器；抓不到时（网站反爬/需登录）请手动复制粘贴。</div></div>
       <div style="margin-top:12px"><button class="btn btn-main" onclick="calcJD()">🎯 分析差距 · 生成速学清单</button></div>
       <div class="res" id="jdRes"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ P8 我的简历 ═══════════ -->
+  <div class="pane" id="p8">
+    <div class="card">
+      <h2>👤 我的简历</h2>
+      <div class="desc">简历是跳槽季的核心资产：在这里<b>上传或粘贴一次</b>，保存到本机浏览器，「JD 匹配分析」和「简历优化」会自动共用这一份，之后每个岗位只需要粘贴 JD。支持 <b>Word（.docx）、PDF、TXT / Markdown</b>。</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px">
+        <button class="btn btn-main" onclick="document.getElementById('pfFile').click()">📎 上传简历文件（.docx / .pdf / .txt / .md）</button>
+        <input type="file" id="pfFile" accept=".docx,.pdf,.txt,.md,text/plain,text/markdown" style="display:none" onchange="handleResumeFile(this)">
+        <span class="hint" id="pfMeta">未导入</span>
+      </div>
+      <div class="fld" style="margin-top:12px"><label class="f">简历正文（导入后自动填入，可直接修改）</label>
+        <textarea id="pfRes" rows="10" placeholder="点击上方按钮选择文件导入，或直接把简历文本粘贴到这里…"></textarea>
+        <div class="hint" id="pfHint">💾 修改后自动保存到本机，三个页面共用同一份。</div></div>
+      <div style="margin-top:12px">
+        <button class="btn btn-main" onclick="gotoTab('p7')">✍️ 去简历体检 / 优化</button>
+        <button class="btn btn-ghost" style="margin-left:8px" onclick="gotoTab('p5')">🎯 去 JD 匹配分析</button>
+      </div>
+      <div class="tipbox" style="margin-top:12px">🔒 文件解析完全在你的浏览器里进行，简历内容不会离开这台设备。两种情况解析不出文字，请打开文件 <b>Ctrl+A 全选 → 复制</b> 后粘贴到文本框：① 扫描版 / 图片型 PDF；② 旧版 .doc（请先用 Word 另存为 .docx）。</div>
     </div>
   </div>
 
@@ -1879,6 +1907,178 @@ function autoSaveTa(key,id,hintId){
 autoSaveTa(K_RES,'jRes','jResHint');
 autoSaveTa(K_JD,'jJd',null);
 
+/* ═══════════ P8 简历文件导入（纯前端解析，文件不出本机） ═══════════
+ * .docx：手写最小 ZIP 读取器（解析中央目录）+ 浏览器原生 DecompressionStream('deflate-raw')
+ *        解压 word/document.xml，再抽 <w:t> 文本 —— 零依赖、可离线。
+ * .pdf：按需从 CDN 加载 pdf.js（首次需联网，之后走浏览器缓存）。
+ * .txt/.md：直接按 UTF-8 读。 */
+function pfSetMeta(t){var e=document.getElementById('pfMeta');if(e)e.textContent=t;}
+function entDecode(s){
+  return String(s).replace(/&(amp|lt|gt|quot|apos|#x?[0-9a-fA-F]+);/g,function(m,g){
+    if(g==='amp')return'&'; if(g==='lt')return'<'; if(g==='gt')return'>';
+    if(g==='quot')return'"'; if(g==='apos')return"'";
+    var hex=g.charAt(1)==='x'||g.charAt(1)==='X';
+    var n=parseInt(g.slice(hex?2:1),hex?16:10);
+    return isNaN(n)||n<0||n>0x10FFFF?m:String.fromCharCode(n);
+  });
+}
+/* docx 的 document.xml → 纯文本：段落断行，剔除域代码，保留制表/换行 */
+function docxXmlToText(xml){
+  var s=String(xml)
+    .replace(/<w:instrText[\s\S]*?<\/w:instrText>/g,'')
+    .replace(/<w:tab\b[^>]*\/?>/g,'\t')
+    .replace(/<w:br\b[^>]*\/?>/g,'\n')
+    .replace(/<\/w:p>/g,'\n');
+  s=s.replace(/<[^>]+>/g,'');
+  return entDecode(s).replace(/\n{3,}/g,'\n\n').replace(/^[\s\u3000]+|[\s\u3000]+$/g,'');
+}
+/* 最小 ZIP 读取：只解析中央目录，按文件名取条目 */
+function u16(b,o){return b[o]|(b[o+1]<<8)}
+function u32(b,o){return (b[o]|(b[o+1]<<8)|(b[o+2]<<16))+b[o+3]*0x1000000}
+function zipEntries(b){
+  var i=b.length-22,eoel=-1;
+  while(i>=0){ if(u32(b,i)===0x06054b50){eoel=i;break} i--; }
+  if(eoel<0)throw new Error('不是有效的 zip 文件（docx 本质是 zip）');
+  var cnt=u16(b,eoel+10),off=u32(b,eoel+16),out=[];
+  for(var k=0;k<cnt;k++){
+    if(off+46>b.length||u32(b,off)!==0x02014b50)break;
+    var nlen=u16(b,off+28),elen=u16(b,off+30),clen=u16(b,off+32),name='';
+    for(var j=0;j<nlen;j++)name+=String.fromCharCode(b[off+46+j]);
+    out.push({name:name,method:u16(b,off+10),csize:u32(b,off+20),lho:u32(b,off+42)});
+    off+=46+nlen+elen+clen;
+  }
+  return out;
+}
+async function zipInflateRaw(u8){
+  if(typeof DecompressionStream==='undefined')
+    throw new Error('当前浏览器不支持原生解压，请用较新的 Chrome / Edge / Safari');
+  var ds=new DecompressionStream('deflate-raw');
+  var w=ds.writable.getWriter();
+  w.write(u8); w.close();
+  var ab=await new Response(ds.readable).arrayBuffer();
+  return new Uint8Array(ab);
+}
+async function zipExtractFile(buf,name){
+  var b=new Uint8Array(buf);
+  var ent=null, list=zipEntries(b);
+  for(var i=0;i<list.length;i++)if(list[i].name===name){ent=list[i];break}
+  if(!ent)throw new Error('压缩包里找不到 '+name+'（可能不是标准 .docx）');
+  var o=ent.lho;
+  if(o+30>b.length||u32(b,o)!==0x04034b50)throw new Error('docx 结构损坏');
+  var nlen=u16(b,o+26),elen=u16(b,o+28),data=b.subarray(o+30+nlen+elen,o+30+nlen+elen+ent.csize);
+  if(ent.method===0)return data;
+  return await zipInflateRaw(data);
+}
+function bytesToText(u8){
+  try{return new TextDecoder('utf-8',{fatal:false}).decode(u8)}catch(e){return ''}
+}
+async function parseDocx(buf){
+  var u8=await zipExtractFile(buf,'word/document.xml');
+  return docxXmlToText(bytesToText(u8));
+}
+/* pdf.js 按需加载：只在第一次导入 PDF 时联网取一次脚本 */
+var PDFJS_URL='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+var PDFJS_WORKER='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+function loadScript(src){
+  return new Promise(function(res,rej){
+    var s=document.createElement('script');
+    s.src=src; s.onload=function(){res()}; s.onerror=function(){rej(new Error('脚本加载失败'))};
+    document.head.appendChild(s);
+  });
+}
+async function ensurePdfJs(){
+  if(window.pdfjsLib)return;
+  await loadScript(PDFJS_URL);
+  if(window.pdfjsLib)window.pdfjsLib.GlobalWorkerOptions.workerSrc=PDFJS_WORKER;
+}
+async function parsePdf(buf){
+  try{ await ensurePdfJs(); }catch(e){
+    throw new Error('PDF 解析组件需要联网加载一次（之后走缓存）。备选：打开 PDF 全选复制文本粘贴。');
+  }
+  var pdf=await window.pdfjsLib.getDocument({data:new Uint8Array(buf)}).promise;
+  var lines=[],lastY=null,cur='';
+  for(var p=1;p<=pdf.numPages;p++){
+    var pg=await pdf.getPage(p),tc=await pg.getTextContent();
+    tc.items.forEach(function(it){
+      if(!it.str)return;
+      var y=it.transform[5];
+      if(lastY!==null&&Math.abs(y-lastY)>3){lines.push(cur);cur='';}
+      if(cur&&/[A-Za-z0-9,;.)]$/.test(cur)&&/^[A-Za-z0-9(]/.test(it.str))cur+=' ';
+      cur+=it.str; lastY=y;
+    });
+    if(cur){lines.push(cur);cur='';}
+    lines.push(''); lastY=null;
+  }
+  return lines.join('\n').replace(/\n{3,}/g,'\n\n').trim();
+}
+async function handleResumeFile(inp){
+  var f=inp.files&&inp.files[0]; if(!f)return;
+  pfSetMeta('⏳ 正在解析 '+f.name+' …');
+  var txt='',ext=(f.name.split('.').pop()||'').toLowerCase();
+  try{
+    var buf=await f.arrayBuffer();
+    if(ext==='docx')txt=await parseDocx(buf);
+    else if(ext==='pdf')txt=await parsePdf(buf);
+    else if(ext==='doc')throw new Error('旧版 .doc 是二进制格式，请先用 Word 另存为 .docx，或全选复制文本粘贴');
+    else txt=bytesToText(new Uint8Array(buf));
+  }catch(e){
+    pfSetMeta('❌ 解析失败');
+    alert('简历解析失败：'+e.message+'\n\n备选方案：打开文件 → Ctrl+A 全选 → 复制 → 粘贴到下方文本框。');
+    inp.value=''; return;
+  }
+  inp.value='';
+  txt=(txt||'').replace(/\r\n/g,'\n').replace(/[ \t]+\n/g,'\n').trim();
+  if(txt.length<50){
+    pfSetMeta('⚠️ 只解析出 '+txt.length+' 字');
+    alert('这个文件只解析出 '+txt.length+' 个字。\n如果是扫描版 / 图片型 PDF，本工具无法提取文字（纯本地不做 OCR）；请打开文件全选复制文本粘贴。');
+    if(txt.length<10)return;
+  }
+  var ta=document.getElementById('pfRes');
+  if(ta){ta.value=txt; ta.dispatchEvent(new Event('input'));}
+  try{localStorage.setItem('wdc_resume_meta_v1',JSON.stringify({name:f.name,chars:txt.length,at:Date.now()}))}catch(e){}
+  pfSetMeta('✅ '+f.name+' · 已导入 '+txt.length+' 字');
+}
+autoSaveTa(K_RES,'pfRes','pfHint');
+(function pfInitMeta(){
+  var len=0,meta=null;
+  try{len=(localStorage.getItem(K_RES)||'').length}catch(e){}
+  try{meta=JSON.parse(localStorage.getItem('wdc_resume_meta_v1')||'null')}catch(e){}
+  if(len)pfSetMeta('💾 已保存简历 · '+len+' 字'+(meta&&meta.name?' · 来源：'+meta.name:''));
+})();
+
+/* ═══════════ JD 链接导入（经公共只读代理抓取正文，仅发送链接本身） ═══════════ */
+function jdCleanUp(t){
+  return String(t||'')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g,'')            /* 图片 */
+    .replace(/\[([^\]]*)\]\([^)]*\)/g,'$1')          /* 链接只留文字 */
+    .replace(/^\s*[-*]\s*\[[ xX]\]\s*$/gm,'')        /* 任务清单空项 */
+    .replace(/\r\n/g,'\n').replace(/\n{3,}/g,'\n\n')
+    .replace(/^[\s\u3000]+|[\s\u3000]+$/g,'');
+}
+async function fetchJDFromUrl(btn){
+  var url=rTrim(v('jUrl'));
+  if(!/^https?:\/\/\S+\.\S+/i.test(url)){alert('请先在输入框粘贴有效的职位链接（http/https 开头）');return;}
+  var old=btn.textContent;
+  btn.disabled=true; btn.textContent='⏳ 抓取中…';
+  try{
+    var r=await fetch('https://r.jina.ai/'+url).catch(function(){return null});
+    if(!r||!r.ok)throw new Error('抓取服务返回 HTTP '+(r?r.status:'网络错误')+'，或本机无法访问外网');
+    var txt=jdCleanUp(await r.text());
+    if(txt.length<120)throw new Error('只抓到 '+txt.length+' 字正文——该页面可能需要登录，或是动态渲染，程序读不到');
+    if(txt.length>30000)txt=txt.slice(0,30000);
+    var ta=document.getElementById('jJd');
+    if(ta){ta.value=txt; ta.dispatchEvent(new Event('input'));}
+    var out=document.getElementById('jdRes');
+    if(out)out.innerHTML='<div class="tipbox">✅ 已从链接导入 <b>'+txt.length+'</b> 字 JD 正文。建议快速检查开头/结尾有没有混入网站导航、推荐位等无关文字，删掉后关键词统计更准。</div>';
+  }catch(e){
+    var out2=document.getElementById('jdRes');
+    if(out2)out2.innerHTML='<div class="tipbox">❌ 自动抓取失败：'+esc(e.message)+'<br><b>备选方案</b>：浏览器打开该链接 → 全选复制 JD 文本 → 粘贴到下方输入框（多数招聘网站有反爬，手动粘贴永远可用）。</div>';
+  }finally{
+    btn.disabled=false; btn.textContent=old;
+  }
+}
+
+
 /* ═══════════ P7 简历优化（纯本地规则引擎，不依赖模型） ═══════════ */
 var STRONG_V=['主导','设计','实现','落地','重构','优化','搭建','推动','治理','沉淀','攻坚','迁移','上线','自动化','定位','压测','抽象','复用','降本','提效','交付','拆分','自研'];
 var WEAK_V={
@@ -2118,7 +2318,7 @@ function reloadSavedViews(){
   var r='',j='';
   try{r=localStorage.getItem(K_RES)||''}catch(e){}
   try{j=localStorage.getItem(K_JD)||''}catch(e){}
-  [['jRes',r],['rvRes',r],['jJd',j],['rvJd',j]].forEach(function(p){
+  [['jRes',r],['rvRes',r],['pfRes',r],['jJd',j],['rvJd',j]].forEach(function(p){
     var e=document.getElementById(p[0]);
     if(e&&document.activeElement!==e&&e.value!==p[1])e.value=p[1];
   });
