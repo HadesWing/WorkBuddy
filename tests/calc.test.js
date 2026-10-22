@@ -39,7 +39,7 @@ let api;
 try {
   const factory = new Function(
     'document', 'window', 'navigator', 'localStorage', 'alert', 'confirm', 'Blob', 'URL', 'setTimeout', 'clearTimeout',
-    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS,posNum};'
+    found[1] + '\n;return {compMonths,nOfM,bonusTaxInfo,offerCalc,taxOf,kwCount,autoCat,qcat,BRK,TECH,KB,BK_KEYS,BK_TAG,bkStats,SAMPLE_OFFERS,SAMPLE_JD,SAMPLE_RESUME,SAMPLE_INTS,posNum,kbLookup,kbCard,kbGeneric,ALIAS,KB_DEEP,KB_PATCH};'
   );
   api = factory(documentStub, windowStub, {}, { getItem: () => null, setItem: noop, removeItem: noop },
     noop, () => false, function () {}, { createObjectURL: () => 'blob:', revokeObjectURL: noop }, () => 0, noop);
@@ -146,14 +146,42 @@ eq('qcat：auto 走自动识别', api.qcat({ cat: 'auto' }, 'Redis 持久化'), 
 eq('qcat：无 cat 字段走自动识别', api.qcat({}, 'TCP 三次握手'), '操作系统与网络');
 
 /* ---------- 8. 知识库完整性 ---------- */
-ok('知识库：速学卡片数量 ≥ 30', Object.keys(api.KB).length >= 30);
-ok('知识库：每张卡片都有定义/要点/学习路径', Object.keys(api.KB).every(k => {
+ok('知识库：速学卡片数量 ≥ 50', Object.keys(api.KB).length >= 50);
+ok('知识库：每张卡片都有「本质/机制/学习路径」', Object.keys(api.KB).every(k => {
   const c = api.KB[k];
-  return c && c.d && c.p && c.p.length && c.path;
+  const ess = c && (c.one || c.d), mech = c && (c.mech || c.p);
+  return ess && mech && mech.length && c.path;
 }));
-ok('知识库：别名 k8s 指向 kubernetes', api.KB.k8s === api.KB.kubernetes);
-ok('知识库：别名 llm 指向大模型', api.KB.llm === api.KB['大模型']);
+ok('知识库：k8s 经词族映射到 kubernetes', (() => {
+  const h = api.kbLookup('k8s'); return !!h && h.c === api.KB.kubernetes;
+})());
+ok('知识库：llm 经词族映射到大模型', (() => {
+  const h = api.kbLookup('llm'); return !!h && h.c === api.KB['大模型'];
+})());
 ok('关键词表：技术词库 ≥ 100 项', api.TECH.length >= 100);
+
+/* ---------- 8b. 速学卡片深度 ---------- */
+const deepKeys = Object.keys(api.KB).filter(k => api.KB[k].mech && api.KB[k].say);
+ok('深度卡片 ≥ 20 张', deepKeys.length >= 20);
+ok('深度卡片都带「30 秒话术」与「简历写法」', deepKeys.every(k => api.KB[k].say && api.KB[k].use));
+ok('深度卡片机制条目 ≥ 3 条', deepKeys.every(k => api.KB[k].mech.length >= 3));
+ok('全部技术词都有卡片可看（无空模板）', api.TECH.every(k => !!api.kbLookup(k)));
+ok('词族卡片不再重复「暂无内置速学卡」', api.TECH.every(k => {
+  const h = api.kbLookup(k); return h && h.c.one && h.c.one.indexOf('暂无内置速学卡') < 0;
+}));
+ok('未知词才走通用兜底（含学习清单）', (() => {
+  const g = api.kbGeneric('zzz-unknown');
+  return g.mech.length >= 4 && !!g.say && !!g.use;
+})());
+ok('卡片渲染：深度卡片包含代码块与话术', (() => {
+  const h = api.kbCard('redis');
+  return h.indexOf('<pre') >= 0 && h.indexOf('30 秒') >= 0 && h.indexOf('写进简历') >= 0;
+})());
+ok('卡片渲染：词族卡片标注了来源词族', (() => {
+  const h = api.kbCard('nacos');
+  return h.indexOf('词族') >= 0 && h.indexOf('注册中心') >= 0;
+})());
+ok('卡片渲染：未知词走兜底且不报错', api.kbCard('zzz-unknown').indexOf('zzz-unknown') >= 0);
 
 /* ---------- 9. 数据备份 ---------- */
 eq('备份：覆盖 4 个存储键', api.BK_KEYS.length, 4);
