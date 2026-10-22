@@ -223,7 +223,7 @@ offer-compass.html  ──(tools/build-app.js 注入 PWA 头)──▶  app/inde
 
 | 层 | 文件 | 断言数 | 保证什么 |
 |---|---|---|---|
-| 计算 | `tests/calc.test.js` | 81 | 算得对：工龄、N、年终奖税、综合所得税、Offer 年化、词频、分类、知识库完整性 |
+| 计算 | `tests/calc.test.js` | 88 | 算得对：工龄、N、年终奖税、综合所得税、Offer 年化、词频、分类、知识库完整性 |
 | 结构 | `tests/structure.test.js` | 32 | 点得动：onclick 函数是否存在、id 是否存在、标签与面板是否对应、关键能力入口是否都在 |
 | 现场 | 页面底部「🧪 计算器自检」 | 15 | 用户不装 Node 也能当场验证，断言调用的是页面正在运行的同一份函数 |
 

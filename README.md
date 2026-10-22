@@ -2,13 +2,24 @@
 
 > WorkBuddy「1024 造物挑战」程序员节应用创作大赛参赛作品
 >
-> [![Tests](https://img.shields.io/badge/tests-70%20passed-success)](tests/calc.test.js) [![CI](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml/badge.svg)](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml) [![Dependencies](https://img.shields.io/badge/dependencies-0-blue)](package.json) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+> [![Tests](https://img.shields.io/badge/calc-88%20passed-success)](tests/calc.test.js) [![Structure](https://img.shields.io/badge/structure-32%20passed-success)](tests/structure.test.js) [![CI](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml/badge.svg)](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml) [![Dependencies](https://img.shields.io/badge/dependencies-0-blue)](package.json) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 跳槽这件事上的六个硬问题：**哪个 Offer 真的更值钱、这份 JD 我差在哪、被裁该拿多少、年终奖怎么发最省税、面试挂在哪、离职该注意什么**。一个页面全部算清。
 
-**在线体验**：<https://workbuddy.link/p/bEQGbhq3YtrL5VODQXoL0q>（打开即用，无需登录、无需 Token）
+**在线体验**：<https://worker-decision-desk.app.workbuddy.host/?sharecode=BMZQ5GLO2Y>（可安装到桌面/手机、断网可用；资料库页备用：<https://workbuddy.link/p/bEQGbhq3YtrL5VODQXoL0q>）
+
+## 目录
+
+- [演示](#演示) · [项目介绍](#项目介绍) · [目标用户](#目标用户) · [功能](#功能)
+- [安装方法](#安装方法) · [使用示例](#使用示例) · [工作原理](#工作原理)
+- [项目结构](#项目结构) · [接口与数据格式](#接口与数据格式) · [测试](#测试)
+- [完成度自查](#完成度自查) · [文档索引](#文档索引) · [边界与合规](#边界与合规) · [参赛材料](#参赛材料)
 
 ## 演示
+
+**最快路径（30 秒）**：打开链接 → 点顶部「载入示例数据」→ 六个模块的结果全部算好，逐个标签看。
+
+示例本身是设计过的：A 公司综合年包 55.9 万、B 公司 40.1 万，但 A 的真实时薪 156 元/小时、B 是 168 元/小时——**少拿 15.8 万，换来每小时多 11 块和每周少 10 小时加班**。同一组示例里，简历与 JD 之间存在 22 个技能缺口，其中 12 个直接给出速学卡片。
 
 ```
 粘贴 JD + 常驻简历 ──▶ 关键词覆盖率 / 缺失项按 JD 词频排序 / 每个缺失项一张速学卡片
@@ -17,9 +28,10 @@
 填两个 Offer      ──▶ 综合年包（现金+公积金+期权）/ 真实时薪 / 年通勤小时 / 自动排序给结论
 填入职离职日期    ──▶ N 月数（精确到月）/ 社平 3 倍封顶 / N、N+1、2N / 法条口径说明
 填年终奖          ──▶ 单独计税 vs 并入综合所得两算取高 / 无效区间检测 / 最优发放金额
+面试后记一次      ──▶ 按类别自动归档 / 跨公司错题本 / 导出 Markdown 综合文档
 ```
 
-> 截图与操作动图见 [`SUBMISSION.md`](SUBMISSION.md) 的「投稿素材」清单（投稿表单要求 1—3 张界面截图）。
+> 投稿用的界面截图清单见 [`SUBMISSION.md`](SUBMISSION.md)；也可以直接点开链接自己点一遍，比截图更真实。
 
 ## 项目介绍
 
@@ -51,6 +63,7 @@
 ## 安装方法
 
 **方式一（推荐）**：直接打开线上地址，零安装。
+<https://worker-decision-desk.app.workbuddy.host/?sharecode=BMZQ5GLO2Y>
 
 **方式二**：本地打开单文件。
 
@@ -64,7 +77,9 @@ python3 -m http.server 8080   # 打开 http://127.0.0.1:8080/offer-compass.html
 **方式三**：跑测试（Node 20+，无需 `npm install`）。
 
 ```bash
-node tests/calc.test.js     # 或 npm test
+npm test                     # 两套一起跑：88 项计算断言 + 32 项结构断言
+node tests/calc.test.js      # 只跑计算
+node tests/structure.test.js # 只跑结构
 ```
 
 **方式四**：安装成桌面 / 手机 App（PWA）。
@@ -126,7 +141,9 @@ Chrome / Edge 会出现「安装」图标，装完就是独立窗口的桌面 Ap
 
 ### 3. 测试即证明
 
-`tests/calc.test.js` 不在测试里重写算法，而是**从 `offer-compass.html` 抽出内联脚本**，在最小 DOM 桩上执行，再对真实函数做断言。70 项覆盖：工龄（含闰年、差一天不满整年）、N 的 0.5/1/多档、年终奖各档税额、无效区间自洽、综合所得税率表、Offer 年化、JD 词频、复盘分类、知识库完整性。
+`tests/calc.test.js` 不在测试里重写算法，而是**从 `offer-compass.html` 抽出内联脚本**，在最小 DOM 桩上执行，再对真实函数做断言。88 项覆盖：工龄（含闰年、差一天不满整年）、N 的 0.5/1/多档、年终奖各档税额、无效区间自洽、综合所得税率表、Offer 年化、JD 词频、复盘分类、知识库完整性、脏输入守卫、示例数据的叙事结论。
+
+`tests/structure.test.js` 补另一面——**点得动**：32 项静态断言检查 onclick 绑定的函数是否已定义、getElementById 引用的 id 是否存在、标签与面板是否一一对应、六个面板是否都有真实动作、11 个关键能力入口是否都在。这类错误不会报语法错，只会在用户点下去时静默失效。
 
 > 这套测试上线时抓到一个真 bug：单独计税误用年度税率表，96000 的年终奖被算成 3%（应为 10%，9390 元）。已修复并留了回归断言。
 
@@ -150,22 +167,76 @@ Chrome / Edge 会出现「安装」图标，装完就是独立窗口的桌面 Ap
 │   ├── build-app.js            # 单源构建：源码 → app/index.html
 │   └── make_icons.py           # 图标生成（纯标准库 PNG 编码）
 ├── tests/
-│   └── calc.test.js            # 70 项零依赖断言（抽出页面脚本执行）
-├── .github/workflows/test.yml  # CI：push / PR 自动跑测试 + 构建校验
+│   ├── calc.test.js            # 88 项计算断言（抽出页面脚本执行）
+│   └── structure.test.js       # 32 项结构断言（纯静态分析，保证「点得动」）
+├── docs/
+│   └── ARCHITECTURE.md         # 技术说明：数据模型 / 计算口径 / 降级设计 / 测试策略
+├── .github/
+│   ├── workflows/test.yml      # CI：push / PR 自动跑测试 + 构建校验
+│   └── ISSUE_TEMPLATE/         # 反馈表单（算错类强制填输入参数）
 ├── package.json                # test / icons / build 入口，无任何依赖
 ├── README.md                   # 本文件
+├── COMPLETENESS.md             # 完成度自查表（68 条，逐条给验证方式）
+├── DEVELOPMENT_LOG.md          # 开发对话存档（含返工与两次自我否定）
+├── CHANGELOG.md                # 更新日志（逐版本对应可查提交）
 ├── SUBMISSION.md               # 投稿材料：表单填写、截图清单、社媒文案
 ├── CONTEST_DECLARATION.md      # 参赛声明
 └── LICENSE                     # MIT
 ```
 
+## 接口与数据格式
+
+本项目没有后端接口，对外契约是**本地存储键**与**备份文件格式**两样。
+
+| 存储键 | 内容 | 结构 |
+|---|---|---|
+| `wdc_offers_v1` | Offer 对比 | 数组 `{name,sal,mon,bon,fund,eq,ot,cm}`（原样存字符串） |
+| `wdc_interviews_v1` | 面试复盘 | 数组 `{co,pos,date,round,cat,q[],note,ts}` |
+| `wdc_resume_v1` | 简历文本 | 字符串 |
+| `wdc_jd_v1` | 最近一份 JD | 字符串 |
+
+备份文件（底部「💾 数据备份」导出）：
+
+```json
+{
+  "app": "wdc-backup",
+  "version": 1,
+  "exportedAt": "2026-10-22T01:20:00.000Z",
+  "data": { "wdc_offers_v1": "[...]", "wdc_resume_v1": "..." }
+}
+```
+
+导入时依次校验 JSON 可解析 → `app` 标识匹配 → `data` 存在，任一不符则拒绝且**不写入任何键**。
+完整字段说明与计算公式见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
+
 ## 测试
 
 ```bash
-node tests/calc.test.js    # ✓ 70 passed, 0 failed
+npm test                    # ✓ 88 passed（计算） + 32 passed（结构）
 ```
 
-页面内也有等价入口：底部「🧪 计算器自检」，一键跑 15 项核心断言，不装 Node 也能验证。
+三层验证：
+
+| 层 | 命令 / 入口 | 断言数 | 保证 |
+|---|---|---|---|
+| 计算 | `node tests/calc.test.js` | 88 | 算得对 |
+| 结构 | `node tests/structure.test.js` | 32 | 点得动 |
+| 现场 | 页面底部「🧪 计算器自检」 | 15 | 不装 Node 也能自己验 |
+
+## 完成度自查
+
+[`COMPLETENESS.md`](COMPLETENESS.md) 把「完成度」拆成 8 个维度、68 条要求，每条附验证方式（可点路径 / 可跑命令 / 可开文件），并诚实列出 5 处尚未做到 100% 的地方。
+
+## 文档索引
+
+| 想知道什么 | 看哪份 |
+|---|---|
+| 它解决什么问题、怎么用 | 本文件 |
+| 数据存在哪、怎么算的、为什么这么设计、失败时怎么降级 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
+| 做这个的过程中走过哪些弯路、被推翻过什么判断 | [`DEVELOPMENT_LOG.md`](DEVELOPMENT_LOG.md) |
+| 每个版本改了什么、缺陷怎么修的 | [`CHANGELOG.md`](CHANGELOG.md) |
+| 完成度到底做到哪一步、有什么没做到 | [`COMPLETENESS.md`](COMPLETENESS.md) |
+| 投稿表单怎么填、截哪几张图、社媒怎么发 | [`SUBMISSION.md`](SUBMISSION.md) |
 
 ## 边界与合规
 
@@ -182,8 +253,11 @@ node tests/calc.test.js    # ✓ 70 passed, 0 failed
 |---|---|
 | `README.md` | 项目介绍、安装方法、使用示例、目标用户 |
 | `offer-compass.html` | 可运行的作品本体（线上体验链接见顶部） |
+| `app/` | PWA 发布目录（可安装、可离线） |
+| `COMPLETENESS.md` | 完成度自查（68 条，逐条附验证方式） |
+| `DEVELOPMENT_LOG.md` | 开发过程存档（含返工与踩坑） |
 | `SUBMISSION.md` | 投稿表单逐字段文案、截图清单、社媒分享文案 |
 | `CONTEST_DECLARATION.md` | 参赛声明 |
-| `tests/calc.test.js` | 计算正确性凭据（70 项断言） |
+| `tests/calc.test.js` · `tests/structure.test.js` | 正确性凭据（88 + 32 项断言） |
 
 本项目为 WorkBuddy「1024 造物挑战」参赛作品，非腾讯官方产品。输出仅供参考。
