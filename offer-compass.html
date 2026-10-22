@@ -137,7 +137,13 @@ footer a{color:var(--brand2);text-decoration:none}
   .brow .bv{width:74px}
   .kpi .big{font-size:24px}
   th,td{padding:8px 5px;font-size:12.5px}
+  .card{overflow-x:auto}          /* 宽表格在窄屏可横滑，不撑破布局 */
+  .tab{min-width:calc(50% - 4px)} /* 六个标签两列排布，避免挤成一团 */
+  .demo{padding:10px 12px}
 }
+/* 键盘可见焦点：鼠标点击不出现，Tab 导航时才显示 */
+.tab:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,
+textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -324,7 +330,8 @@ footer a{color:var(--brand2);text-decoration:none}
     <a href="https://github.com/HadesWing/WorkBuddy" target="_blank" rel="noopener">📦 开源仓库</a> ·
     <a href="https://github.com/HadesWing/WorkBuddy/issues/new" target="_blank" rel="noopener">💬 反馈与建议</a><br>
     <span id="mkInstallWrap" style="display:none"><a href="javascript:installApp()">📱 安装到桌面 / 手机主屏</a><br></span>
-    🧭 打工人决策台 · 用 WorkBuddy 制作 · 1024 程序员节
+    🧭 打工人决策台 <span style="color:var(--ink3)">v1.2.0</span> · 用 WorkBuddy 制作 · 1024 程序员节 ·
+    <a href="https://github.com/HadesWing/WorkBuddy/blob/main/CHANGELOG.md" target="_blank" rel="noopener">更新日志</a>
   </footer>
 </div>
 
@@ -343,12 +350,22 @@ function gotoTab(id){
   if(t)t.click();
 }
 document.querySelectorAll('.tab').forEach(function(t){
+  t.setAttribute('role','tab');
+  t.setAttribute('aria-controls',t.dataset.t);
+  t.setAttribute('aria-selected',t.classList.contains('on')?'true':'false');
   t.onclick=function(){
-    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    document.querySelectorAll('.tab').forEach(function(x){
+      x.classList.remove('on'); x.setAttribute('aria-selected','false');
+    });
     document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});
     t.classList.add('on');
+    t.setAttribute('aria-selected','true');
     document.getElementById(t.dataset.t).classList.add('on');
   };
+});
+document.querySelectorAll('.pane').forEach(function(p){
+  p.setAttribute('role','tabpanel');
+  p.setAttribute('tabindex','0');
 });
 
 /* ═══════════ 示例数据：让新用户/评委一次看完六个模块 ═══════════ */
