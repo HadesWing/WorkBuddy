@@ -2,7 +2,7 @@
 
 > WorkBuddy「1024 造物挑战」程序员节应用创作大赛参赛作品
 >
-> [![Tests](https://img.shields.io/badge/calc-88%20passed-success)](tests/calc.test.js) [![Structure](https://img.shields.io/badge/structure-32%20passed-success)](tests/structure.test.js) [![CI](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml/badge.svg)](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml) [![Dependencies](https://img.shields.io/badge/dependencies-0-blue)](package.json) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+> [![Tests](https://img.shields.io/badge/calc-143%20passed-success)](tests/calc.test.js) [![Structure](https://img.shields.io/badge/structure-49%20passed-success)](tests/structure.test.js) [![CI](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml/badge.svg)](https://github.com/HadesWing/WorkBuddy/actions/workflows/test.yml) [![Dependencies](https://img.shields.io/badge/dependencies-0-blue)](package.json) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 跳槽这件事上的六个硬问题：**哪个 Offer 真的更值钱、这份 JD 我差在哪、被裁该拿多少、年终奖怎么发最省税、面试挂在哪、离职该注意什么**。一个页面全部算清。
 
@@ -107,7 +107,7 @@ Chrome / Edge 会出现「安装」图标，装完就是独立窗口的桌面 Ap
 ### 2. 示例输出（补偿计算）
 
 ```text
-入职 2020-03-10 · 离职 2026-09-20 · 月均应发 25000 · 情形：无过失性辞退（N+1）
+入职 2020-03-10 · 离职 2026-09-20 · 月均应发 20000 · 情形：无过失性辞退（N+1）
 
 工龄 6 年 6 个月（折算 7 个月）
 经济补偿 7 × 25,000 = ¥175,000
