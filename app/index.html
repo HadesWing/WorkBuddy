@@ -387,7 +387,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
     <a href="https://github.com/HadesWing/WorkBuddy" target="_blank" rel="noopener">📦 开源仓库</a> ·
     <a href="https://github.com/HadesWing/WorkBuddy/issues/new" target="_blank" rel="noopener">💬 反馈与建议</a><br>
     <span id="mkInstallWrap" style="display:none"><a href="javascript:installApp()">📱 安装到桌面 / 手机主屏</a><br></span>
-    🧭 打工人决策台 <span style="color:var(--ink3)">v1.3.0</span> · 用 WorkBuddy 制作 · 1024 程序员节 ·
+    🧭 打工人决策台 <span style="color:var(--ink3)">v1.4.0</span> · 用 WorkBuddy 制作 · 1024 程序员节 ·
     <a href="https://github.com/HadesWing/WorkBuddy/blob/main/CHANGELOG.md" target="_blank" rel="noopener">更新日志</a>
   </footer>
 </div>
@@ -2455,13 +2455,20 @@ function runSelfTest(){
   T('复盘分类：Redis → 数据库与缓存',autoCat('Redis 持久化 RDB 和 AOF 的取舍'),'数据库与缓存');
   T('复盘分类：手撕反转链表 → 算法手撕',autoCat('手撕：反转链表'),'算法手撕');
   T('速学卡片不少于 30 张',Object.keys(KB).length>=30,true);
+  T('别名映射不少于 200 条',Object.keys(ALIAS).length>=200,true);
+  T('简历体检：弱动词会被改写',rRewrite('负责需求评审').changed.length>0,true);
+  T('简历体检：年份区间不算量化成果',rHasMetric('2019-2021 在某公司'),false);
+  T('简历导入：docx 段落断行',docxXmlToText('<w:p><w:t>a</w:t></w:p><w:p><w:t>b</w:t></w:p>'),'a\nb');
+  T('简历导入：docx 实体还原',docxXmlToText('<w:p><w:t>A &amp; B</w:t></w:p>'),'A & B');
+  T('JD 链接：正文清洗只留链接文字',jdCleanUp('[岗位职责](#x)开发'),'岗位职责开发');
+  T('JD 链接：图片语法整段剔除',jdCleanUp('a![x](https://e/p.png)b'),'ab');
   var all=pass+fail;
   document.getElementById('stBox').innerHTML=
     '<div class="ohd"><h2>'+(fail===0?'🧪 计算器自检 · 全部通过':'🧪 计算器自检 · 有 '+fail+' 项失败')+'</h2>'
     +'<button class="btn btn-sm btn-ghost" onclick="closeSelfTest()">关闭</button></div>'
     +'<div class="desc">'+pass+' 通过 / '+fail+' 失败（共 '+all+' 项）。断言直接调用页面<b>正在运行的同一份计算函数</b>，不是另写的示例数据。</div>'
     +'<table>'+rows.join('')+'</table>'
-    +'<div class="tipbox" style="margin-top:12px">完整套件在仓库 <code>tests/calc.test.js</code>（120 项断言），<code>node tests/calc.test.js</code> 可复现。发现算错的地方欢迎提 Issue。</div>';
+    +'<div class="tipbox" style="margin-top:12px">完整套件在仓库 <code>tests/calc.test.js</code>（143 项断言）+ <code>tests/structure.test.js</code>（47 项结构断言），<code>npm test</code> 可复现。发现算错的地方欢迎提 Issue。</div>';
   document.getElementById('stOv').style.display='flex';
 }
 function closeSelfTest(){document.getElementById('stOv').style.display='none';}
