@@ -159,7 +159,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
       <span class="tag">✍️ 简历优化体检</span>
       <span class="tag">💰 离职补偿 N / N+1 / 2N</span>
       <span class="tag">🧾 年终奖个税优化</span>
-      <span class="tag">📝 面试复盘库</span>
+      <!-- v1.4.1：面试复盘库入口暂时下线，代码与数据结构完整保留（面板 p6 与全部函数未删） -->
       <span class="tag">📋 离职小抄</span>
     </div>
   </div>
@@ -173,12 +173,13 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
     <button class="tab" data-t="p7"><span class="t-ico">✍️</span>简历优化</button>
     <button class="tab" data-t="p2"><span class="t-ico">💰</span>离职补偿</button>
     <button class="tab" data-t="p3"><span class="t-ico">🧾</span>年终奖个税</button>
-    <button class="tab" data-t="p6"><span class="t-ico">📝</span>面试复盘库</button>
+    <!-- v1.4.1：面试复盘库入口暂时下线，代码保留 —— 恢复时取消本行注释即可
+    <button class="tab" data-t="p6"><span class="t-ico">📝</span>面试复盘库</button> -->
     <button class="tab" data-t="p4"><span class="t-ico">📋</span>离职小抄</button>
   </div>
 
   <div class="demo" id="demoBar">
-    <div class="demo-txt" id="demoTxt">👀 <b>第一次来？</b>不用自己填 —— 载入一组示例，八个模块立刻跑出结果，30 秒看完。</div>
+    <div class="demo-txt" id="demoTxt">👀 <b>第一次来？</b>不用自己填 —— 载入一组示例，七个模块立刻跑出结果，30 秒看完。</div>
     <div class="demo-act" id="demoAct">
       <button class="btn btn-sm btn-main" onclick="loadSample()">载入示例数据</button>
       <button class="btn btn-sm btn-ghost" onclick="closeDemo()">自己填</button>
@@ -298,7 +299,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
     </div>
   </div>
 
-  <!-- ═══════════ P6 面试复盘 ═══════════ -->
+  <!-- ═══════════ P6 面试复盘（v1.4.1 入口下线：面板与全部 JS 保留，仅无标签入口） ═══════════ -->
   <div class="pane" id="p6">
     <div class="card">
       <h2>📝 面试复盘库</h2>
@@ -378,7 +379,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
     <a href="https://github.com/HadesWing/WorkBuddy" target="_blank" rel="noopener">📦 开源仓库</a> ·
     <a href="https://github.com/HadesWing/WorkBuddy/issues/new" target="_blank" rel="noopener">💬 反馈与建议</a><br>
     <span id="mkInstallWrap" style="display:none"><a href="javascript:installApp()">📱 安装到桌面 / 手机主屏</a><br></span>
-    🧭 打工人决策台 <span style="color:var(--ink3)">v1.4.0</span> · 用 WorkBuddy 制作 · 1024 程序员节 ·
+    🧭 打工人决策台 <span style="color:var(--ink3)">v1.4.1</span> · 用 WorkBuddy 制作 · 1024 程序员节 ·
     <a href="https://github.com/HadesWing/WorkBuddy/blob/main/CHANGELOG.md" target="_blank" rel="noopener">更新日志</a>
   </footer>
 </div>
@@ -450,7 +451,7 @@ var SAMPLE_INTS=[
 ];
 function loadSample(){
   var has=collectOffers().some(function(o){return o.name||o.sal||o.bon});
-  if(has&&!confirm('载入示例会覆盖当前的 Offer / 简历 / JD；面试复盘会追加 2 条示例记录。继续？'))return;
+  if(has&&!confirm('载入示例会覆盖当前的 Offer / 简历 / JD。继续？'))return;
 
   /* Offer 两个：一个总包高但加班多，一个总包低但时薪可能更高 */
   document.getElementById('offerList').innerHTML=''; offerSeq=0;
@@ -503,7 +504,7 @@ function loadSample(){
   gotoTab('p1');
 
   document.getElementById('demoTxt').innerHTML=
-    '✅ <b>示例已就绪</b>：2 个 Offer、1 份简历与 JD、2 条面试复盘都已填好，<b>七个模块的结果也已经算好</b>。简历体检会给示例简历打低分——那是故意留的典型弱写法（「负责…」+ 没有数字 + 没有段落），正好用来看它能挑出什么问题。';
+    '✅ <b>示例已就绪</b>：2 个 Offer、1 份简历与 JD 都已填好，<b>七个模块的结果也已经算好</b>。简历体检会给示例简历打低分——那是故意留的典型弱写法（「负责…」+ 没有数字 + 没有段落），正好用来看它能挑出什么问题。';
   document.getElementById('demoAct').innerHTML=
     '<button class="btn btn-sm btn-ghost" onclick="clearSample()">清空示例</button>';
 }

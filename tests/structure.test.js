@@ -71,18 +71,29 @@ Object.keys(RUNTIME_IDS).forEach((id) => {
 });
 
 /* ---------- 4. 标签页与面板一一对应 ---------- */
-const tabTargets = [...src.matchAll(/data-t="([^"]+)"/g)]
+/* 先剥离 HTML 注释再扫描：被注释掉的下线入口（如 v1.4.1 的 p6 tab）不算数 */
+const htmlNoComments = src.replace(/<!--[\s\S]*?-->/g, '');
+const tabTargets = [...htmlNoComments.matchAll(/data-t="([^"]+)"/g)]
   .map((x) => x[1])
   .filter((t) => !t.includes("'")); // 排除 JS 里拼出来的选择器（如 data-t="'+id+'"）
-const panes = [...src.matchAll(/class="pane[^"]*" id="([^"]+)"/g)].map((x) => x[1]);
+const panes = [...htmlNoComments.matchAll(/class="pane[^"]*" id="([^"]+)"/g)].map((x) => x[1]);
 
-ok('标签数量 = 面板数量', tabTargets.length === panes.length,
-  tabTargets.length + ' vs ' + panes.length);
-ok('标签 target 都能找到对应面板', tabTargets.every((t) => panes.includes(t)),
-  tabTargets.filter((t) => !panes.includes(t)).join(', '));
-ok('没有孤立面板（面板都有标签入口）', panes.every((p) => tabTargets.includes(p)),
-  panes.filter((p) => !tabTargets.includes(p)).join(', '));
-ok('标签 + 面板数量为 8（八大模块）', tabTargets.length === 8, '当前 ' + tabTargets.length);
+/* v1.4.1：面试复盘库（p6）入口暂时下线，代码保留 —— 这是唯一允许的「有面板无标签」例外 */
+const DISABLED_PANES = ['p6'];
+
+const visibleTargets = tabTargets;
+const activePanes = panes.filter((p) => !DISABLED_PANES.includes(p));
+
+ok('标签数量 = 可见面板数量', visibleTargets.length === activePanes.length,
+  visibleTargets.length + ' vs ' + activePanes.length);
+ok('标签 target 都能找到对应面板', visibleTargets.every((t) => panes.includes(t)),
+  visibleTargets.filter((t) => !panes.includes(t)).join(', '));
+ok('可见面板都有标签入口（下线面板除外）', activePanes.every((p) => visibleTargets.includes(p)),
+  activePanes.filter((p) => !visibleTargets.includes(p)).join(', '));
+ok('可见标签数量为 7（七大模块）', visibleTargets.length === 7, '当前 ' + visibleTargets.length);
+ok('面试复盘库入口已下线（tab 按钮不渲染）', !/<button class="tab" data-t="p6"/.test(htmlNoComments));
+ok('面试复盘库代码保留（面板 p6 与导出函数仍在）',
+  idSet.has('p6') && defined.has('exportInterviews') && defined.has('renderInts'));
 
 /* ---------- 5. 每个面板内至少有一个可执行动作 ---------- */
 panes.forEach((p) => {
