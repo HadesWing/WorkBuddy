@@ -37,7 +37,7 @@ body:
     id: input
     attributes:
       label: 你的输入参数（算错时必填）
-      description: 例如：入职 2020-03-10、离职 2026-09-20、月均应发 25000、情形 N+1、社平 12000
+      description: 例如：入职 2020-03-10、离职 2026-09-20、月均应发 20000、情形 N+1、社平 12000
       placeholder: 请尽量给全，方便复现
   - type: textarea
     id: expect

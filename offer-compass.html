@@ -208,7 +208,7 @@ textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand2);outline-o
         <div class="fld"><label class="f">入职日期 *</label><input type="date" id="cIn"></div>
         <div class="fld"><label class="f">离职日期 *</label><input type="date" id="cOut"></div>
         <div class="fld full"><label class="f">离职前 12 个月平均应发工资（元/月，含奖金、津贴、提成）*</label>
-          <input type="number" id="cSal" placeholder="如 25000" min="0"></div>
+          <input type="number" id="cSal" placeholder="如 20000" min="0"></div>
         <div class="fld"><label class="f">当地上年度社平月工资（元，选填，用于高收入封顶判断）</label>
           <input type="number" id="cAvg" placeholder="如 12000" min="0"></div>
         <div class="fld"><label class="f">解除情形</label>
@@ -472,7 +472,7 @@ function loadSample(){
   /* 离职补偿 */
   document.getElementById('cIn').value='2020-03-10';
   document.getElementById('cOut').value='2026-09-20';
-  document.getElementById('cSal').value='25000';
+  document.getElementById('cSal').value='20000';
   document.getElementById('cAvg').value='12000';
   document.getElementById('cType').value='n1';
 
@@ -533,7 +533,7 @@ function offerTemplate(i){
   +'<button class="btn btn-sm btn-del" onclick="delOffer('+i+')">删除</button></div>'
   +'<div class="grid">'
   +'<div class="fld"><label class="f">公司 / 项目名称</label><input type="text" id="oName'+i+'" placeholder="如：A 公司 · 后端开发"></div>'
-  +'<div class="fld"><label class="f">基本月薪（元）</label><input type="number" id="oSal'+i+'" placeholder="如 25000" min="0"></div>'
+  +'<div class="fld"><label class="f">基本月薪（元）</label><input type="number" id="oSal'+i+'" placeholder="如 20000" min="0"></div>'
   +'<div class="fld"><label class="f">固定发放月数</label><select id="oMon'+i+'">'
     +'<option>12</option><option>13</option><option selected>14</option><option>15</option><option>16</option></select>'
     +'<div class="hint">合同/offer 写明的固定月数</div></div>'
