@@ -79,7 +79,7 @@ python3 -m http.server 8080   # 打开 http://127.0.0.1:8080/offer-compass.html
 **方式三**：跑测试（Node 20+，无需 `npm install`）。
 
 ```bash
-npm test                     # 两套一起跑：120 项计算断言 + 35 项结构断言
+npm test                     # 两套一起跑：143 项计算断言 + 47 项结构断言
 node tests/calc.test.js      # 只跑计算
 node tests/structure.test.js # 只跑结构
 ```
@@ -143,7 +143,7 @@ Chrome / Edge 会出现「安装」图标，装完就是独立窗口的桌面 Ap
 
 ### 3. 测试即证明
 
-`tests/calc.test.js` 不在测试里重写算法，而是**从 `offer-compass.html` 抽出内联脚本**，在最小 DOM 桩上执行，再对真实函数做断言。120 项覆盖：工龄（含闰年、差一天不满整年）、N 的 0.5/1/多档、年终奖各档税额、无效区间自洽、综合所得税率表、Offer 年化、JD 词频、复盘分类、知识库完整性、脏输入守卫、示例数据的叙事结论、简历体检打分与改写。
+`tests/calc.test.js` 不在测试里重写算法，而是**从 `offer-compass.html` 抽出内联脚本**，在最小 DOM 桩上执行，再对真实函数做断言。143 项覆盖：工龄（含闰年、差一天不满整年）、N 的 0.5/1/多档、年终奖各档税额、无效区间自洽、综合所得税率表、Offer 年化、JD 词频、复盘分类、知识库完整性、脏输入守卫、示例数据的叙事结论、简历体检打分与改写。
 
 `tests/structure.test.js` 补另一面——**点得动**：47 项静态断言检查 onclick 绑定的函数是否已定义、getElementById 引用的 id 是否存在、标签与面板是否一一对应、八个面板是否都有真实动作、13 个关键能力入口是否都在。这类错误不会报语法错，只会在用户点下去时静默失效。
 
@@ -169,7 +169,7 @@ Chrome / Edge 会出现「安装」图标，装完就是独立窗口的桌面 Ap
 │   ├── build-app.js            # 单源构建：源码 → app/index.html
 │   └── make_icons.py           # 图标生成（纯标准库 PNG 编码）
 ├── tests/
-│   ├── calc.test.js            # 120 项计算断言（抽出页面脚本执行）
+│   ├── calc.test.js            # 143 项计算断言（抽出页面脚本执行）
 │   └── structure.test.js       # 35 项结构断言（纯静态分析，保证「点得动」）
 ├── docs/
 │   └── ARCHITECTURE.md         # 技术说明：数据模型 / 计算口径 / 降级设计 / 测试策略
