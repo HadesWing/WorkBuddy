@@ -1,0 +1,1442 @@
+{
+  "generated": "2026-10-27T13:33:15.620986+00:00",
+  "input_sources": {
+    "rss_articles": 98,
+    "twitter_articles": 0,
+    "web_articles": 0,
+    "github_articles": 1,
+    "github_trending": 0,
+    "reddit_posts": 0,
+    "total_input": 99
+  },
+  "processing": {
+    "deduplication_applied": true,
+    "multi_source_merging": true,
+    "previous_digest_penalty": true,
+    "quality_scoring": true,
+    "content_quality_filter": true,
+    "clickbait_detection": true
+  },
+  "output_stats": {
+    "total_articles": 50,
+    "topics_count": 4,
+    "topic_distribution": {
+      "crypto": 13,
+      "frontier-tech": 29,
+      "llm": 6,
+      "quantum": 2
+    }
+  },
+  "topics": {
+    "crypto": {
+      "count": 13,
+      "articles": [
+        {
+          "title": "Zcash co-founder proposes ending grants subsidy, citing $125 million treasury",
+          "link": "https://www.theblock.co/news/ecosystems/2026-10-27-zcash-co-founder-proposes-ending-grants-subsidy-citing-125-million-treasury-431847",
+          "date": "2026-10-27T12:05:17+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "The Block",
+          "source_id": "theblock-rss",
+          "quality_score": 21.0,
+          "multi_source": true,
+          "source_count": 2,
+          "all_sources": [
+            "The Block",
+            "Cointelegraph"
+          ],
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Ark Invest buys $5.2 million of Circle shares, sells $15.9 million of its own Bitcoin ETF as BTC grinds lower",
+          "link": "https://www.theblock.co/news/markets/2026-10-27-ark-invest-buys-5-2-million-of-circle-shares-sells-15-9-million-of-its-own-bitcoin-etf-as-btc-grinds-lower-431838",
+          "date": "2026-10-27T10:57:34+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "The Block",
+          "source_id": "theblock-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 1.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 1.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Circle faces up to 20% revenue risk from AI agents, Mizuho says",
+          "link": "https://www.theblock.co/news/business/2026-10-27-mizuho-cuts-circle-price-target-431826",
+          "date": "2026-10-27T06:28:34+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "The Block",
+          "source_id": "theblock-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "foundry nightly-024702852422e43ed7c8dd66528875229c043b0d",
+          "link": "https://github.com/foundry-rs/foundry/releases/tag/nightly-024702852422e43ed7c8dd66528875229c043b0d",
+          "date": "2026-10-27T07:13:29+00:00",
+          "summary": "Other - chore(deps): bump solar dependencies to 3a70399 (#17819) by @github-actions[bot] - feat(config): disallow linked Solidity libraries (#13585) by @mgiagante - fix(symbolic): recognize all...",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "github",
+          "source_name": "Foundry",
+          "source_id": "foundry-github",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "content_bonus": 2.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "SBLOC vs. Margin Loan: How Borrowing Against Shares Differs",
+          "link": "https://thedefiant.io/news/tradfi-and-fintech/sbloc-vs-margin-loan-how-borrowing-against-shares-differs",
+          "date": "2026-10-27T13:19:56+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "The Defiant",
+          "source_id": "defiant-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.5,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.5,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Common vs. Preferred Dividends: What MSTR and STRC Holders Can Claim",
+          "link": "https://thedefiant.io/news/cefi/common-vs-preferred-dividends-what-mstr-and-strc-holders-can-claim",
+          "date": "2026-10-27T13:19:32+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "The Defiant",
+          "source_id": "defiant-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 1.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 1.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Stop-Loss vs. Stop-Limit: Why a Trigger Is Not a Fill",
+          "link": "https://thedefiant.io/news/defi/stop-loss-vs-stop-limit-why-a-trigger-is-not-a-fill",
+          "date": "2026-10-27T13:16:27+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "The Defiant",
+          "source_id": "defiant-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Here’s what happened in crypto today",
+          "link": "https://cointelegraph.com/news/what-happened-in-crypto-today?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "date": "2026-10-27T13:17:24+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "Cointelegraph",
+          "source_id": "cointelegraph-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Hayes details FLOP’s AI compute derivatives vision after selling his altcoins",
+          "link": "https://cointelegraph.com/news/hayes-flop-ai-compute-vision-selling-altcoin?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "date": "2026-10-27T13:01:10+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "Cointelegraph",
+          "source_id": "cointelegraph-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.5,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.5,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Luxor raises $16M from CMT Digital amid AI-Bitcoin miner convergence",
+          "link": "https://cointelegraph.com/news/luxor-raises-16m-ai-bitcoin-miner-convergence?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "date": "2026-10-27T13:01:00+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "Cointelegraph",
+          "source_id": "cointelegraph-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.5,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.5,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Bitcoin Mining Firm Luxor Raises $16 Million to Scale Its AI Compute Push",
+          "link": "https://decrypt.co/381847/bitcoin-mining-firm-luxor-raises-16-million-ai-compute",
+          "date": "2026-10-27T13:01:08+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "Decrypt",
+          "source_id": "decrypt-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Morning Minute: Tokenized Stock Battle Looms Over Robinhood’s Earnings Call",
+          "link": "https://decrypt.co/381907/morning-minute-tokenized-stock-battle-looms-over-robinhoods-earnings-call",
+          "date": "2026-10-27T12:59:58+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "Decrypt",
+          "source_id": "decrypt-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        },
+        {
+          "title": "Why This Team of Ninjas Is Tripling Down on Mining Bitcoin",
+          "link": "https://decrypt.co/381906/why-this-team-of-ninjas-is-tripling-down-on-mining-bitcoin",
+          "date": "2026-10-27T11:46:51+00:00",
+          "topics": [
+            "crypto"
+          ],
+          "source_type": "rss",
+          "source_name": "Decrypt",
+          "source_id": "decrypt-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "crypto",
+          "all_topics": [
+            "crypto"
+          ]
+        }
+      ]
+    },
+    "frontier-tech": {
+      "count": 29,
+      "articles": [
+        {
+          "title": "Python's experimental JIT to be removed",
+          "link": "https://lwn.net/SubscriberLink/1102102/0c00e4d550f25f8c/",
+          "date": "2026-10-27T11:17:57+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Hacker News Frontpage",
+          "source_id": "hn-rss",
+          "quality_score": 15.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.5,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.5,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Anduril and Qualcomm unveil BlueChip, a line of laptops designed and assembled in the US for defense and government; Anduril will begin taking orders in 2027 (Bloomberg)",
+          "link": "https://www.techmeme.com/261027/p17#a261027p17",
+          "date": "2026-10-27T13:20:01+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Techmeme",
+          "source_id": "techmeme-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Apple updates the 24-inch iMac with an M6 chip, with up to a 12-core CPU, up to a 12-core GPU, and a dual 16-core Neural Engine, from $1,499 on November 6 (Apple)",
+          "link": "https://www.techmeme.com/261027/p16#a261027p16",
+          "date": "2026-10-27T13:10:01+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Techmeme",
+          "source_id": "techmeme-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 1.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 1.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Apple unveils the 14-inch MacBook Pro with M6, with a 12-core CPU and a 12-core GPU, up to 32GB of unified memory, and Wi-Fi 7, from $1,999 on November 6 (Apple)",
+          "link": "https://www.techmeme.com/261027/p15#a261027p15",
+          "date": "2026-10-27T13:07:02+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Techmeme",
+          "source_id": "techmeme-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 1.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 1.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Apple introduces the new 14-inch MacBook Pro with M6",
+          "link": "https://www.apple.com/newsroom/2026/10/apple-introduces-the-new-14-inch-macbook-pro-with-m6/",
+          "date": "2026-10-27T13:01:07+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Hacker News Frontpage",
+          "source_id": "hn-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Software may be getting worse, but it used to be horrible",
+          "link": "https://www.bitlog.com/2026/10/27/software-may-be-getting-worse-but-it-used-to-be-horrible/",
+          "date": "2026-10-27T11:30:35+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Hacker News Frontpage",
+          "source_id": "hn-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Wikipedia's Cleanup of AI-Generated Content",
+          "link": "https://spectrum.ieee.org/wikipedia-wikiproject-ai-writing-cleanup",
+          "date": "2026-10-27T11:08:15+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Hacker News Frontpage",
+          "source_id": "hn-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "AI promised less work. I've never worked more",
+          "link": "https://oioannou.com/blog/ai-promised-less-work/",
+          "date": "2026-10-27T11:08:14+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Hacker News Frontpage",
+          "source_id": "hn-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 1.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 1.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Roblox downloaded 145GB models from us (including adult content) without asking",
+          "link": "https://open3dlab.com/news/roblox-downloaded-145-gb-of-models-from-our-sites/",
+          "date": "2026-10-27T10:27:50+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Hacker News Frontpage",
+          "source_id": "hn-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "I will no longer upload to NEW",
+          "link": "https://lists.debian.org/debian-devel/2026/10/msg00263.html",
+          "date": "2026-10-27T09:59:05+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Hacker News Frontpage",
+          "source_id": "hn-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.5,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.5,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "The Mythical Man-Month in the Age of AI",
+          "link": "https://j11g.com/the-mythical-man-month-in-the-age-of-ai",
+          "date": "2026-10-27T06:25:37+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Hacker News Frontpage",
+          "source_id": "hn-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Writing about pratt parsing so I remember it",
+          "link": "https://www.unix.dog/~yosh/blog/2026-10-25_pratt-parsing.html",
+          "date": "2026-10-27T06:02:23+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Hacker News Frontpage",
+          "source_id": "hn-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Apple refreshes the iMac with M6 chips",
+          "link": "https://www.theverge.com/tech/1018467/apple-imac-m6-chip-announced-price-release",
+          "date": "2026-10-27T13:05:26+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "The Verge",
+          "source_id": "verge-rss",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Apple updates the MacBook Pro with M6 chips",
+          "link": "https://www.theverge.com/tech/1017664/apple-macbook-pro-m6-processor-upgrade",
+          "date": "2026-10-27T13:04:28+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "The Verge",
+          "source_id": "verge-rss",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "AirFly’s wireless headphone dongle adds a screen to guide you through the pairing process",
+          "link": "https://www.theverge.com/tech/1018679/twelve-south-airfly-view-screen-display-wireless-headphone-earbuds-airplane-adapter",
+          "date": "2026-10-27T13:00:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "The Verge",
+          "source_id": "verge-rss",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "AI Agents Are Media’s New Favorite Audience",
+          "link": "https://www.wired.com/story/ai-agents-are-medias-new-favorite-audience/",
+          "date": "2026-10-27T11:00:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Wired",
+          "source_id": "wired-rss",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "NASA’s Oldest Martian Spacecraft Have Been Running for Decades. Here’s How",
+          "link": "https://www.wired.com/story/how-nasa-oldest-martian-spacecraft-run-for-decades/",
+          "date": "2026-10-27T10:45:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Wired",
+          "source_id": "wired-rss",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.5,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.5,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Instagram Is a Streaming Service Now",
+          "link": "https://www.wired.com/story/instagram-is-a-streaming-service-now/",
+          "date": "2026-10-27T10:30:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Wired",
+          "source_id": "wired-rss",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Billionaire Palmer Luckey isn’t leaving California over the wealth tax",
+          "link": "https://techcrunch.com/2026/10/27/billionaire-palmer-luckey-isnt-leaving-california-over-the-wealth-tax/",
+          "date": "2026-10-27T13:01:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "TechCrunch",
+          "source_id": "techcrunch-rss",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Anduril, Qualcomm launch BlueChip, a new kind of US-made laptop",
+          "link": "https://techcrunch.com/2026/10/27/anduril-qualcomm-launch-bluechip-a-new-kind-of-us-made-laptop/",
+          "date": "2026-10-27T13:00:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "TechCrunch",
+          "source_id": "techcrunch-rss",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "General Compute raises $100 million Series A, countering the neocloud disaster narrative",
+          "link": "https://techcrunch.com/2026/10/27/general-compute-raises-100-million-series-a-countering-the-neocloud-disaster-narrative/",
+          "date": "2026-10-27T13:00:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "TechCrunch",
+          "source_id": "techcrunch-rss",
+          "quality_score": 5.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": true,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "content_bonus": 2.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "亿万工程师，同饮五粮春——五粮春携手GTLC为构建者举杯",
+          "link": "https://www.infoq.cn/article/rYaRAYC7xR5D28AaNdN7?utm_source=rss&utm_medium=article",
+          "date": "2026-10-27T18:39:03+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "InfoQ 中文",
+          "source_id": "infoq-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Azure Container Apps Express在新的通用沙箱层上正式发布",
+          "link": "https://www.infoq.cn/article/ChONW7EYk5Vuj0VF7AkZ?utm_source=rss&utm_medium=article",
+          "date": "2026-10-27T17:17:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "InfoQ 中文",
+          "source_id": "infoq-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "TypeSafe AI发布Jev：一种只返回类型化概率而非文本的决策模型",
+          "link": "https://www.infoq.cn/article/3o7gwgKJt2SbH8AhdpkU?utm_source=rss&utm_medium=article",
+          "date": "2026-10-27T15:22:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "InfoQ 中文",
+          "source_id": "infoq-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Rokid Glasses 2 首发体验：让不戴眼镜的我，习惯戴它出门",
+          "link": "https://www.ifanr.com/1686154?utm_source=rss&utm_medium=rss&utm_campaign=",
+          "date": "2026-10-27T10:23:36+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "爱范儿",
+          "source_id": "ifanr-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "7.69 万元起，第三代秦 PLUS DM-i 上市，内饰颜值大提升！",
+          "link": "https://www.ifanr.com/1686110?utm_source=rss&utm_medium=rss&utm_campaign=",
+          "date": "2026-10-27T09:19:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "爱范儿",
+          "source_id": "ifanr-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.5,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.5,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "中国版Muse能管事！我把宠物保单、双11算价和周末旅行全交给了灵光2.0",
+          "link": "https://www.ifanr.com/1686050?utm_source=rss&utm_medium=rss&utm_campaign=",
+          "date": "2026-10-27T05:02:30+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "爱范儿",
+          "source_id": "ifanr-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "社区速递 163 | 金豪 59 调整版钢笔与九月派友剁手清单",
+          "link": "https://sspai.com/post/117633",
+          "date": "2026-10-27T09:02:00+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "少数派",
+          "source_id": "sspai-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Apple Sports：不看新闻、不聊球，只看我关心的比赛",
+          "link": "https://sspai.com/post/117557",
+          "date": "2026-10-27T07:27:57+00:00",
+          "topics": [
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "少数派",
+          "source_id": "sspai-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "frontier-tech",
+          "all_topics": [
+            "frontier-tech"
+          ]
+        }
+      ]
+    },
+    "llm": {
+      "count": 6,
+      "articles": [
+        {
+          "title": "The Download: Anthropic’s IPO, smarter power grids, and exercise pills",
+          "link": "https://www.technologyreview.com/2026/10/27/1147693/the-download-anthropic-ipo-smarter-power-grids-exercise-pills/",
+          "date": "2026-10-27T12:10:00+00:00",
+          "topics": [
+            "llm",
+            "ai-agent",
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "MIT Technology Review",
+          "source_id": "mit-tech-review-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.5,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.5,
+          "primary_topic": "llm",
+          "all_topics": [
+            "llm",
+            "ai-agent",
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Industrial Intelligence: The next growth opportunity for manufacturing",
+          "link": "https://www.technologyreview.com/2026/10/27/1147142/industrial-intelligence-the-next-growth-opportunity-for-manufacturing/",
+          "date": "2026-10-27T11:19:18+00:00",
+          "topics": [
+            "llm",
+            "ai-agent",
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "MIT Technology Review",
+          "source_id": "mit-tech-review-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "llm",
+          "all_topics": [
+            "llm",
+            "ai-agent",
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "How solid-state transformers could help power the AI boom",
+          "link": "https://www.technologyreview.com/2026/10/27/1147684/solid-state-transformers/",
+          "date": "2026-10-27T09:00:00+00:00",
+          "topics": [
+            "llm",
+            "ai-agent",
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "MIT Technology Review",
+          "source_id": "mit-tech-review-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "llm",
+          "all_topics": [
+            "llm",
+            "ai-agent",
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "OpenAI asks outside experts, including a Nobel laureate, to check proofs its AI produced in math, computer science, and physics",
+          "link": "https://the-decoder.com/openai-asks-outside-experts-including-a-nobel-laureate-to-check-proofs-its-ai-produced-in-math-computer-science-and-physics/",
+          "date": "2026-10-27T12:37:24+00:00",
+          "topics": [
+            "llm",
+            "ai-agent"
+          ],
+          "source_type": "rss",
+          "source_name": "The Decoder",
+          "source_id": "the-decoder-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "llm",
+          "all_topics": [
+            "llm",
+            "ai-agent"
+          ]
+        },
+        {
+          "title": "OpenAI's partner content arrives in ChatGPT pre-summarized while the rest of the web gets raw scraps",
+          "link": "https://the-decoder.com/openais-partner-content-arrives-in-chatgpt-pre-summarized-while-the-rest-of-the-web-gets-raw-scraps/",
+          "date": "2026-10-27T11:39:24+00:00",
+          "topics": [
+            "llm",
+            "ai-agent"
+          ],
+          "source_type": "rss",
+          "source_name": "The Decoder",
+          "source_id": "the-decoder-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "llm",
+          "all_topics": [
+            "llm",
+            "ai-agent"
+          ]
+        },
+        {
+          "title": "Anthropic uses its IPO letter to renew its pledge that Claude will never show ads",
+          "link": "https://the-decoder.com/anthropic-uses-its-ipo-letter-to-renew-its-pledge-that-claude-will-never-show-ads/",
+          "date": "2026-10-27T11:20:51+00:00",
+          "topics": [
+            "llm",
+            "ai-agent"
+          ],
+          "source_type": "rss",
+          "source_name": "The Decoder",
+          "source_id": "the-decoder-rss",
+          "quality_score": 3.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 1.5,
+            "passed_filters": true
+          },
+          "clickbait_score": 1.5,
+          "primary_topic": "llm",
+          "all_topics": [
+            "llm",
+            "ai-agent"
+          ]
+        }
+      ]
+    },
+    "quantum": {
+      "count": 2,
+      "articles": [
+        {
+          "title": "Electron spin force moves a macroscopic object",
+          "link": "https://physicsworld.com/a/electron-spin-force-moves-a-macroscopic-object/",
+          "date": "2026-10-27T12:00:43+00:00",
+          "topics": [
+            "quantum",
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Physics World",
+          "source_id": "physics-world-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "quantum",
+          "all_topics": [
+            "quantum",
+            "frontier-tech"
+          ]
+        },
+        {
+          "title": "Hawking, warts and all: a new biography of a scientific icon",
+          "link": "https://physicsworld.com/a/hawking-warts-and-all-a-new-biography-of-a-scientific-icon/",
+          "date": "2026-10-27T09:00:00+00:00",
+          "topics": [
+            "quantum",
+            "frontier-tech"
+          ],
+          "source_type": "rss",
+          "source_name": "Physics World",
+          "source_id": "physics-world-rss",
+          "quality_score": 13.0,
+          "content_signals": {
+            "has_numbers": false,
+            "has_code": false,
+            "has_links": false,
+            "is_question": false,
+            "title_ok_len": true,
+            "quality_domain": false,
+            "clickbait_score": 0.0,
+            "passed_filters": true
+          },
+          "clickbait_score": 0.0,
+          "primary_topic": "quantum",
+          "all_topics": [
+            "quantum",
+            "frontier-tech"
+          ]
+        }
+      ]
+    }
+  }
+}
