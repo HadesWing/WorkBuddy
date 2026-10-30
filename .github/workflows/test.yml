@@ -22,6 +22,8 @@ jobs:
         run: node tests/calc.test.js
       - name: 结构完整性冒烟测试
         run: node tests/structure.test.js
+      - name: 主流程冒烟（逐模块执行渲染函数）
+        run: node tests/smoke.test.js
       - name: 构建 PWA 版本（校验图标与清单齐全）
         run: |
           python tools/make_icons.py
